@@ -174,6 +174,8 @@ export const streamingMixin = {
         },
     },
     mounted() {
-        this.checkIfStreaming();
+        if (this.streamEnabled) {
+            this.checkIfStreaming();
+        }
     },
 }

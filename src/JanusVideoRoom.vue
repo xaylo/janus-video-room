@@ -413,6 +413,9 @@ export default {
   created() {
     this.Janus = janusConnector;
   },
+  mounted(){
+      console.log(this.userData)
+  },
   mixins: [
     janusSetupMixin,
     janusLocalMixin,
