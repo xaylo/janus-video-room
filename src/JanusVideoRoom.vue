@@ -42,7 +42,7 @@
       </div>
     </div>
 
-    <div class="absolute inset-0 flex items-center justify-center">
+    <div class="absolute inset-0 flex items-center justify-center" v-if="streamEnabled">
       <div class="countdown">
         <div
           class="text-center"
@@ -406,7 +406,7 @@ import { screenMixin } from "./mixins/screen";
 import { settingsMixin } from "./mixins/settings";
 
 export default {
-  props: ["roomData", "userData", "streamEnabled"],
+  props: ["roomData", "userData", "streamEnabled", "serverUrl"],
   data() {
     return {};
   },

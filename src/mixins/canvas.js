@@ -95,6 +95,8 @@ export const canvasMixin = {
     },
 
     mounted() {
-        this.startCanvasLoop();
+        if (this.streamEnabled) {
+            this.startCanvasLoop();
+        }
     },
 }

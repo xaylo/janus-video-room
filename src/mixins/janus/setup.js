@@ -2,7 +2,7 @@ export const janusSetupMixin = {
     data() {
         return {
             room: this.roomData,
-            server: "https://janus.xaylo.com/rtc",
+            server: this.serverUrl,
             janus: null,
             xayloConnection: null,
             webinarRoomId: parseInt(this.roomData.id),
