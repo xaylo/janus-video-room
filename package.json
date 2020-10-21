@@ -19,6 +19,7 @@
   "author": "jaythegeek",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.20.0",
     "cross-env": "^7.0.2",
     "laravel-mix": "^5.0.7",
     "tailwindcss": "^1.9.5",
@@ -26,5 +27,12 @@
   },
   "devDependencies": {
     "vue-template-compiler": "^2.6.12"
+  },
+  "eslintConfig": {
+    "rules": {
+      "no-unused-vars": "off",
+      "no-undef": "off",
+      "no-redeclare": "off"
+    }
   }
 }
