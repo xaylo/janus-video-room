@@ -393,6 +393,7 @@
 </template>
 
 <script>
+import "./assets/styles/app.scss";
 import janusConnector from "./meetecho/janus";
 
 import { janusSetupMixin } from "./mixins/janus/setup";
@@ -461,7 +462,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .video-wrapper {
   margin: 0 !important;
   overflow: hidden;
