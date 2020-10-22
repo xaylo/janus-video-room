@@ -63,7 +63,7 @@ export const janusLocalMixin = {
                 display: this.currentUser.userName,
                 quality: 0,
             };
-            this.$page.userName = this.currentUser.userName;
+
             this.xayloConnection.send({
                 message: register
             });

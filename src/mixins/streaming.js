@@ -1,3 +1,4 @@
+import axios from "axios";
 export const streamingMixin = {
     data() {
         return {
@@ -174,6 +175,8 @@ export const streamingMixin = {
         },
     },
     mounted() {
-        this.checkIfStreaming();
+        if (this.streamEnabled) {
+            this.checkIfStreaming();
+        }
     },
 }

@@ -42,7 +42,10 @@
       </div>
     </div>
 
-    <div class="absolute inset-0 flex items-center justify-center" v-if="streamEnabled">
+    <div
+      class="absolute inset-0 flex items-center justify-center"
+      v-if="streamEnabled"
+    >
       <div class="countdown">
         <div
           class="text-center"
@@ -390,6 +393,7 @@
 </template>
 
 <script>
+import "./assets/styles/app.scss";
 import janusConnector from "./meetecho/janus";
 
 import { janusSetupMixin } from "./mixins/janus/setup";
@@ -406,12 +410,43 @@ import { screenMixin } from "./mixins/screen";
 import { settingsMixin } from "./mixins/settings";
 
 export default {
-  props: ["roomData", "userData", "streamEnabled", "serverUrl"],
+  props: {
+    roomData: {
+      type: Object,
+      default: () => ({
+        id: 1,
+      }),
+      validator(x) {
+        return x != null;
+      },
+    },
+    userData: {
+      type: Object,
+      default: () => ({
+        name: "Test Testingtons",
+        email: "test@xaylo.com",
+      }),
+      validator(x) {
+        return x != null;
+      },
+    },
+    streamEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    serverUrl: {
+      type: String,
+      default: "https://janus.xaylo.com/rtc",
+    },
+  },
   data() {
     return {};
   },
   created() {
     this.Janus = janusConnector;
+  },
+  mounted() {
+    console.log(this.userData);
   },
   mixins: [
     janusSetupMixin,
@@ -427,7 +462,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .video-wrapper {
   margin: 0 !important;
   overflow: hidden;
