@@ -126,14 +126,14 @@
     <!-- End local video -->
 
     <div class="control-area">
-      <div class="flex">
+      <div class="flex flex-wrap mb-3 ml-4">
         <!-- Mini screen - displays a small preview of the current screen share -->
         <!-- Grows on hover -->
         <video
           ref="miniScreen"
           autoplay
           playsinline
-          class="hidden bg-green absolute bottom-28 left-12 border-2 border-white screen-preview-window"
+          class="hidden bg-green border-2 border-white screen-preview-window"
         ></video>
         <!-- End mini screen -->
       </div>

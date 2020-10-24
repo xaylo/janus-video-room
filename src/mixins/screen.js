@@ -31,6 +31,10 @@ export const screenMixin = {
                 success: () => {
                     this.localScreenShare = false;
                     this.screenButtonBusy = false;
+
+                    this.localScreenStream.getTracks()
+                        .forEach(track => track.stop())
+
                     this.localScreenStream = null;
                     this.miniScreen.srcObject = null
                     this.miniScreen.classList.add('hidden')
@@ -77,8 +81,15 @@ export const screenMixin = {
             this.publishScreen(stream);
             this.screenSources = [];
         },
-
+        listenForScreenShareEnd(stream) {
+            stream.getVideoTracks()[0].addEventListener('ended', () => {
+                console.log('Stop button pressed in browser')
+                this.endScreenShare()
+            })
+        },
         publishScreen(stream) {
+
+            this.listenForScreenShareEnd(stream);
             this.registerScreenUsername();
 
             this.janus.attach({

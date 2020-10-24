@@ -4,6 +4,7 @@
     margin: 0 !important;
     overflow: hidden;
     width: 100%;
+    background: black !important;
 }
 
 .inside-wrapper {
@@ -26,7 +27,7 @@
 .screen-active {
     position: absolute !important;
     bottom: 0.5rem !important;
-    left: 1rem !important;
+    right: 240px !important;
     width: 200px;
     height: 150px;
     border-radius: 0.25rem;
@@ -43,8 +44,8 @@
 }
 
 .screen-video {
-    width: 1280;
-    height: 720;
+    width: auto;
+    max-width: 100% !important;
 }
 
 .local-video-container {
