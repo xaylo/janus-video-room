@@ -340,6 +340,7 @@ export const janusSetupMixin = {
             });
         },
     },
+
     mounted() {
         if (this.Janus) {
             this.setupJanus();
