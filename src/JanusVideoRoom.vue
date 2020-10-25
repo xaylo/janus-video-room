@@ -389,6 +389,16 @@
       </div>
     </div>
     <!-- End settings Area -->
+
+    <!-- Electron Screen Capturer -->
+    <electron-screen-selector
+      v-if="screenSources.length > 0"
+      :sources="screenSources"
+      @selected="selectScreenSourceElectron"
+      @close="screenSources = []"
+    ></electron-screen-selector>
+
+    <!--  -->
   </div>
 </template>
 
@@ -408,6 +418,8 @@ import { audioMixin } from "./mixins/audio";
 import { screenMixin } from "./mixins/screen";
 
 import { settingsMixin } from "./mixins/settings";
+
+import ElectronScreenSelector from "./electron/ScreenSelector";
 
 export default {
   props: {
@@ -434,9 +446,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    isElectron: {
+      type: Boolean,
+      default: false,
+    },
     serverUrl: {
       type: String,
       default: "https://janus.xaylo.com/rtc",
+    },
+    desktopCapturer: {
+      type: Object,
+      default: null,
     },
   },
   data() {
@@ -459,6 +479,9 @@ export default {
     screenMixin,
     settingsMixin,
   ],
+  components: {
+    ElectronScreenSelector,
+  },
 };
 </script>
 

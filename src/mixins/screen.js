@@ -60,18 +60,38 @@ export const screenMixin = {
             });
         },
 
-        async enableScreenShare() {
-            var displayMediaOptions = {
-                video: {
-                    cursor: this.screenCaptureSettings.cursor,
-                },
-                audio: false,
-            };
+        enableScreenShare() {
+            if (this.isElectron) {
+                this.enableScreenShareElectron()
+            } else {
+                var displayMediaOptions = {
+                    video: {
+                        cursor: this.screenCaptureSettings.cursor,
+                    },
+                    audio: false,
+                };
 
-            var stream = await navigator.mediaDevices.getDisplayMedia(
-                displayMediaOptions
-            );
-            this.selectScreenSource(stream);
+                var stream =
+                    navigator.mediaDevices.getDisplayMedia(
+                        displayMediaOptions
+                    );
+                this.selectScreenSource(stream);
+            }
+        },
+
+        enableScreenShareElectron() {
+            console.log('helloenableScreenShareElectron')
+            this.desktopCapturer
+                .getSources({
+                    types: ["window", "screen"],
+                    thumbnailSize: {
+                        width: 1280,
+                        height: 720
+                    },
+                })
+                .then(async (sources) => {
+                    this.screenSources = sources;
+                });
         },
 
 
@@ -81,6 +101,31 @@ export const screenMixin = {
             this.publishScreen(stream);
             this.screenSources = [];
         },
+
+        async selectScreenSourceElectron(source) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: false,
+                    video: {
+                        mandatory: {
+                            chromeMediaSource: "desktop",
+                            chromeMediaSourceId: source.id,
+                            // minWidth: 1280,
+                            // maxWidth: 1280,
+                            // minHeight: 720,
+                            // maxHeight: 720,
+                        },
+                    },
+                });
+                this.screenShare = true;
+                this.localScreenShare = true;
+                this.publishScreen(stream);
+                this.screenSources = [];
+            } catch (e) {
+                console.log(e);
+            }
+        },
+
         listenForScreenShareEnd(stream) {
             stream.getVideoTracks()[0].addEventListener('ended', () => {
                 console.log('Stop button pressed in browser')
