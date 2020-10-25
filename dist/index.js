@@ -2445,10 +2445,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./src/electron/ScreenSelector.vue?vue&type=script&lang=js&":
-/*!**************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./src/electron/ScreenSelector.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./src/components/LightButton.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/LightButton.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -2463,6 +2463,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    type: {
+      type: String,
+      "default": "submit"
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./src/electron/ScreenSelector.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./src/electron/ScreenSelector.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _components_LightButton__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/LightButton */ "./src/components/LightButton.vue");
 //
 //
 //
@@ -2501,6 +2522,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["sources"],
   methods: {
@@ -2513,6 +2542,9 @@ __webpack_require__.r(__webpack_exports__);
     close: function close() {
       this.$emit("close");
     }
+  },
+  components: {
+    LightButton: _components_LightButton__WEBPACK_IMPORTED_MODULE_0__["default"]
   }
 });
 
@@ -2549,7 +2581,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n.screen-selector {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  width: 100%;\n  height: 100%;\n  overflow: scroll;\n  background: #000;\n  z-index: 9999;\n}\n", ""]);
+exports.push([module.i, "\n.screen-selector {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  width: 100%;\n  height: 100%;\n  overflow: scroll;\n  background: #000;\n  z-index: 999999 !important;\n}\n", ""]);
 
 // exports
 
@@ -7620,6 +7652,39 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/components/LightButton.vue?vue&type=template&id=cd06ac30&":
+/*!*****************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/components/LightButton.vue?vue&type=template&id=cd06ac30& ***!
+  \*****************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "button",
+    {
+      staticClass:
+        "inline-block items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-sm text-gray-900 uppercase tracking-widest hover:bg-gray-400 active:bg-gray-600 focus:outline-none focus:border-gray-600 focus:shadow-outline-gray transition ease-in-out duration-150",
+      attrs: { type: _vm.type }
+    },
+    [_vm._t("default")],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/electron/ScreenSelector.vue?vue&type=template&id=afa5cae2&":
 /*!******************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/electron/ScreenSelector.vue?vue&type=template&id=afa5cae2& ***!
@@ -7635,10 +7700,10 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "screen-selector p-5" }, [
+  return _c("div", { staticClass: "screen-selector p-2 text-white" }, [
     _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-auto ml-auto" }, [
+      _c("div", { staticClass: "flex" }, [
+        _c("div", { staticClass: "ml-auto" }, [
           _c(
             "button",
             { staticClass: "btn btn-light btn-sm", on: { click: _vm.close } },
@@ -7651,9 +7716,9 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "row" },
+        { staticClass: "flex flex-wrap" },
         _vm._l(_vm.sources, function(s) {
-          return _c("div", { key: s.id, staticClass: "col-md-3 mb-3" }, [
+          return _c("div", { key: s.id, staticClass: "w-1/3 mb-3 px-2 my-2" }, [
             _c(
               "div",
               {
@@ -7666,13 +7731,8 @@ var render = function() {
               },
               [
                 _c("img", {
-                  staticClass: "card-img-top",
-                  attrs: {
-                    src: _vm.getImageUrl(s.thumbnail),
-                    alt: s.name,
-                    width: "100%",
-                    height: "120"
-                  }
+                  staticClass: "card-img-top w-100 h-56",
+                  attrs: { src: _vm.getImageUrl(s.thumbnail), alt: s.name }
                 }),
                 _vm._v(" "),
                 _c("div", { staticClass: "card-body" }, [
@@ -7682,21 +7742,20 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c(
-                  "button",
+                  "light-button",
                   {
-                    staticClass: "btn btn-light btn-block btn-sm",
+                    staticClass: "text-center",
+                    attrs: { type: "button" },
                     on: {
                       click: function($event) {
                         return _vm.selectSource(s)
                       }
                     }
                   },
-                  [
-                    _c("i", { staticClass: "fad fa-hand-pointer mr-2" }),
-                    _vm._v("Select\n          ")
-                  ]
+                  [_vm._v("Share this\n          ")]
                 )
-              ]
+              ],
+              1
             )
           ])
         }),
@@ -7710,9 +7769,9 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row mb-3 text-center" }, [
+    return _c("div", { staticClass: "flex mb-3 text-center" }, [
       _c("div", { staticClass: "col" }, [
-        _c("h5", { staticClass: "mb-0 text-white" }, [
+        _c("h5", { staticClass: "mb-0" }, [
           _vm._v(
             "\n          Please select the screen or application you wish to share\n        "
           )
@@ -10932,6 +10991,75 @@ var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addS
 if(content.locals) module.exports = content.locals;
 
 if(false) {}
+
+/***/ }),
+
+/***/ "./src/components/LightButton.vue":
+/*!****************************************!*\
+  !*** ./src/components/LightButton.vue ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _LightButton_vue_vue_type_template_id_cd06ac30___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./LightButton.vue?vue&type=template&id=cd06ac30& */ "./src/components/LightButton.vue?vue&type=template&id=cd06ac30&");
+/* harmony import */ var _LightButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./LightButton.vue?vue&type=script&lang=js& */ "./src/components/LightButton.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _LightButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _LightButton_vue_vue_type_template_id_cd06ac30___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _LightButton_vue_vue_type_template_id_cd06ac30___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "src/components/LightButton.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./src/components/LightButton.vue?vue&type=script&lang=js&":
+/*!*****************************************************************!*\
+  !*** ./src/components/LightButton.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LightButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/babel-loader/lib??ref--4-0!../../node_modules/vue-loader/lib??vue-loader-options!./LightButton.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./src/components/LightButton.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LightButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./src/components/LightButton.vue?vue&type=template&id=cd06ac30&":
+/*!***********************************************************************!*\
+  !*** ./src/components/LightButton.vue?vue&type=template&id=cd06ac30& ***!
+  \***********************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LightButton_vue_vue_type_template_id_cd06ac30___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib??vue-loader-options!./LightButton.vue?vue&type=template&id=cd06ac30& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/components/LightButton.vue?vue&type=template&id=cd06ac30&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LightButton_vue_vue_type_template_id_cd06ac30___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LightButton_vue_vue_type_template_id_cd06ac30___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 

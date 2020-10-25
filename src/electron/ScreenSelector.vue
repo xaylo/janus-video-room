@@ -1,22 +1,22 @@
 <template>
-  <div class="screen-selector p-5">
+  <div class="screen-selector p-2 text-white">
     <div class="container">
-      <div class="row">
-        <div class="col-auto ml-auto">
+      <div class="flex">
+        <div class="ml-auto">
           <button class="btn btn-light btn-sm" @click="close">
             <i class="fad fa-times"></i>
           </button>
         </div>
       </div>
-      <div class="row mb-3 text-center">
+      <div class="flex mb-3 text-center">
         <div class="col">
-          <h5 class="mb-0 text-white">
+          <h5 class="mb-0">
             Please select the screen or application you wish to share
           </h5>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-3 mb-3" v-for="s in sources" :key="s.id">
+      <div class="flex flex-wrap">
+        <div class="w-1/3 mb-3 px-2 my-2" v-for="s in sources" :key="s.id">
           <div
             class="card h-100 border-0 shadow-sm cursor-pointer"
             @click="selectSource(s)"
@@ -24,20 +24,18 @@
             <img
               :src="getImageUrl(s.thumbnail)"
               :alt="s.name"
-              class="card-img-top"
-              width="100%"
-              height="120"
+              class="card-img-top w-100 h-56"
             />
             <div class="card-body">
               <h5 class="card-title">{{ s.name }}</h5>
             </div>
 
-            <button
-              class="btn btn-light btn-block btn-sm"
+            <light-button
+              type="button"
               @click="selectSource(s)"
-            >
-              <i class="fad fa-hand-pointer mr-2"></i>Select
-            </button>
+              class="text-center"
+              >Share this
+            </light-button>
           </div>
         </div>
       </div>
@@ -46,6 +44,8 @@
 </template>
 
 <script>
+import LightButton from "../components/LightButton";
+
 export default {
   props: ["sources"],
   methods: {
@@ -58,6 +58,9 @@ export default {
     close() {
       this.$emit("close");
     },
+  },
+  components: {
+    LightButton,
   },
 };
 </script>
@@ -72,6 +75,6 @@ export default {
   height: 100%;
   overflow: scroll;
   background: #000;
-  z-index: 9999;
+  z-index: 999999 !important;
 }
 </style>
