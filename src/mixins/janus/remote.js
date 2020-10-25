@@ -3,9 +3,21 @@ export const janusRemoteMixin = {
         return {
             remoteStream: null,
             bitrateTimer: [],
+            remoteStreams: []
         }
     },
     methods: {
+
+        fetchParticipants(connection) {
+            // We wait for the plugin to send us an offer
+            var getParticipantsRequest = {
+                request: "listparticipants",
+                room: this.webinarRoomId
+            };
+            connection.send({
+                message: getParticipantsRequest
+            });
+        },
         newRemoteFeed(id, display, audio, video) {
             // A new feed has been published, create a new plugin handle and attach to it as a subscriber
             var remoteFeed = null;
@@ -164,6 +176,20 @@ export const janusRemoteMixin = {
                         this.screenShare = false;
                         this.remoteStream = stream;
                         this.$refs.remoteVideoElement.srcObject = stream;
+                        // 
+                        // this.fetchParticipants(remoteFeed)
+                        var remoteStreamIndex = this.remoteStreams.findIndex(stream => stream.id === remoteFeed.id)
+                        console.log('does it exist yet?', remoteStreamIndex)
+                        if (remoteStreamIndex === -1) {
+                            var data = {
+                                id: remoteFeed.id,
+                                stream: stream
+                            }
+                            this.remoteStreams.push(data)
+                        }
+
+
+
                     }
 
                     var videoTracks = stream.getVideoTracks();
@@ -179,6 +205,10 @@ export const janusRemoteMixin = {
                     this.Janus.log(
                         " ::: Got a cleanup notification (remote feed " + id + ") :::"
                     );
+
+
+                    var remoteStreamIndex = this.remoteStreams.findIndex(stream => stream.id === remoteFeed.id);
+                    this.remoteStreams.splice(remoteStreamIndex, 1)
 
                     // Hide this remote video?
                     if (remoteFeed.spinner);

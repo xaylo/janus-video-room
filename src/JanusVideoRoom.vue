@@ -44,6 +44,20 @@
 
     <div
       class="absolute inset-0 flex items-center justify-center"
+      v-if="remoteStreams.length == 0"
+    >
+      <div class="waiting">
+        <div class="text-center">
+          <h4 class="text-white text-3xl">
+            Waiting for participant to join...
+          </h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- Countdown -->
+    <div
+      class="absolute inset-0 flex items-center justify-center"
       v-if="streamEnabled"
     >
       <div class="countdown">
@@ -55,6 +69,8 @@
         </div>
       </div>
     </div>
+
+    <!-- End countdown -->
 
     <!-- Streaming Canvas - hidden from view - this is what is broadcast -->
     <canvas ref="streamingCanvas" class="hidden"></canvas>
@@ -72,7 +88,7 @@
     <!-- Remote screen video - displays -->
     <video
       ref="remoteScreenVideoElement"
-      class="bg-primary screen-video hidden"
+      class="bg-black screen-video hidden w-100 h-100"
       autoplay
       playsinline
     />
