@@ -175,7 +175,7 @@ export const janusRemoteMixin = {
                     } else {
                         this.screenShare = false;
                         this.remoteStream = stream;
-                        this.$refs.remoteVideoElement.srcObject = stream;
+                        // this.$refs.remoteVideoElement.srcObject = stream;
                         // 
                         // this.fetchParticipants(remoteFeed)
                         var remoteStreamIndex = this.remoteStreams.findIndex(stream => stream.id === remoteFeed.id)
@@ -186,6 +186,9 @@ export const janusRemoteMixin = {
                                 stream: stream
                             }
                             this.remoteStreams.push(data)
+
+
+                            // this.$refs['remoteVideo' + remoteFeed.id].srcObject = stream;
                         }
 
 

@@ -77,12 +77,18 @@
     <!-- End streaming canvas -->
 
     <!-- Remote Video - displays full screen if no screen being shared to user -->
-    <video
-      ref="remoteVideoElement"
-      class="bg-black remote-video"
-      autoplay
-      playsinline
-    />
+    <div class="remote-videos flex flex-wrap" ref="remoteVideosContainer">
+      <video
+        v-for="(s, index) in remoteStreams"
+        :key="s.id"
+        :ref="'remoteVideo' + s.id"
+        :srcObject.prop="s.stream"
+        :class="widthOfRemoteVideo(index)"
+        class="bg-black remote-video p-2"
+        autoplay
+        playsinline
+      />
+    </div>
     <!-- End remote video -->
 
     <!-- Remote screen video - displays -->
@@ -473,6 +479,17 @@ export default {
     desktopCapturer: {
       type: Object,
       default: null,
+    },
+  },
+  methods: {
+    widthOfRemoteVideo(index) {
+      if (index === 0) {
+        return "w-full";
+      } else if (index === 1) {
+        return "w-1/2";
+      } else if (index === 2) {
+        return "w-1/3";
+      }
     },
   },
   data() {

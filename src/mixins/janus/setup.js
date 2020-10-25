@@ -299,7 +299,9 @@ export const janusSetupMixin = {
                             this.$refs.localVideoElement.muted = "muted";
 
                             //   this.Janus.attachMediaStream($("#myvideo").get(0), stream);
-                            this.drawLocalVideo();
+                            if (this.streamEnabled) {
+                                this.drawLocalVideo();
+                            }
 
                             if (
                                 this.xayloConnection.webrtcStuff.pc.iceConnectionState !==
