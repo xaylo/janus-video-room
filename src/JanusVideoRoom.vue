@@ -2,7 +2,7 @@
   <div class="video-wrapper">
     <div class="streaming-control-area" v-if="room && streamEnabled">
       <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold text-center rounded mx-4 py-2 px-4"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold text-center rounded mx-3 py-2 px-4"
         v-if="!room.streaming"
         @click="startBroadcasting"
       >
@@ -10,7 +10,7 @@
       </button>
 
       <button
-        class="bg-red-500 hover:bg-red-700 text-white font-bold text-center rounded mx-4 py-2 px-4"
+        class="bg-red-500 hover:bg-red-700 text-white font-bold text-center rounded mx-3 py-2 px-4"
         v-if="room.streaming && streamingLocally"
         @click="stopBroadcasting"
       >
@@ -44,13 +44,27 @@
 
     <div
       class="absolute inset-0 flex items-center justify-center"
-      v-if="remoteStreams.length == 0"
+      v-if="remoteStreams.length == 0 && !showPermissionsPrompt"
     >
       <div class="waiting">
         <div class="text-center">
           <h4 class="text-white text-3xl">
             Waiting for participant to join...
           </h4>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="absolute inset-0 flex items-center justify-center"
+      v-if="showPermissionsPrompt"
+    >
+      <div class="waiting">
+        <div class="text-center">
+          <h4 class="text-white text-3xl">
+            Please allow camera and microphone permissions
+          </h4>
+          <p class="text-white">This can be set at the top left of the browser</p>
         </div>
       </div>
     </div>
@@ -77,12 +91,18 @@
     <!-- End streaming canvas -->
 
     <!-- Remote Video - displays full screen if no screen being shared to user -->
-    <video
-      ref="remoteVideoElement"
-      class="bg-black remote-video"
-      autoplay
-      playsinline
-    />
+    <div class="remote-videos flex flex-wrap" ref="remoteVideosContainer">
+      <video
+        v-for="(s, index) in remoteStreams"
+        :key="s.id"
+        :ref="'remoteVideo' + s.id"
+        :srcObject.prop="s.stream"
+        :class="widthOfRemoteVideo(index)"
+        class="bg-black remote-video p-2 h-auto max-h-screen"
+        autoplay
+        playsinline
+      />
+    </div>
     <!-- End remote video -->
 
     <!-- Remote screen video - displays -->
@@ -157,7 +177,7 @@
       <!-- Controls -->
       <div class="flex flex-wrap pl-6">
         <button
-          class="btn-circle btn-circle-xl mr-4 bg-red-500 hover:bg-red-700 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-red-500 hover:bg-red-700 text-white font-bold text-center"
           v-if="audioEnabled"
           @click="toggleMute"
           v-tooltip.top="'Your mic is currently on, click to mute'"
@@ -178,7 +198,7 @@
           </svg>
         </button>
         <button
-          class="btn-circle btn-circle-xl mx-4 bg-green-500 hover:bg-green-700 text-white font-bold text-center mx-4"
+          class="btn-circle btn-circle-xl mx-2 bg-green-500 hover:bg-green-700 text-white font-bold text-center"
           v-if="!audioEnabled"
           @click="toggleMute"
           v-tooltip.top="'Your mic is currently off, click to unmute'"
@@ -201,7 +221,7 @@
 
         <!-- Camera -->
         <button
-          class="btn-circle btn-circle-xl mx-4 bg-red-500 hover:bg-red-700 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mx-2 bg-red-500 hover:bg-red-700 text-white font-bold text-center"
           v-if="videoEnabled"
           @click="toggleVideo"
           v-tooltip.top="'Your camera is currently on, click to turn it off'"
@@ -222,7 +242,7 @@
           </svg>
         </button>
         <button
-          class="btn-circle btn-circle-xl mx-4 bg-green-500 hover:bg-green-700 text-white font-bold text-center mx-4"
+          class="btn-circle btn-circle-xl mx-2 bg-green-500 hover:bg-green-700 text-white font-bold text-center"
           v-if="!videoEnabled"
           @click="toggleVideo"
           v-tooltip.top="'Your camera is currently off, click to turn it on'"
@@ -245,7 +265,7 @@
         <!-- End camera -->
 
         <button
-          class="btn-circle btn-circle-xl mx-4 bg-green-500 hover:bg-green-700 text-white font-bold text-center mx-4"
+          class="btn-circle btn-circle-xl mx-2 bg-green-500 hover:bg-green-700 text-white font-bold text-center"
           v-if="!localScreenShare && !screenShare"
           :disabled="screenShare || screenButtonBusy"
           @click="enableScreenShare"
@@ -269,7 +289,7 @@
           </svg>
         </button>
         <button
-          class="btn-circle btn-circle-xl mx-4 bg-red-500 hover:bg-red-700 text-white font-bold text-center mx-4"
+          class="btn-circle btn-circle-xl mx-2 bg-red-500 hover:bg-red-700 text-white font-bold text-center"
           v-if="localScreenShare"
           :disabled="screenButtonBusy"
           @click="endScreenShare"
@@ -294,7 +314,7 @@
         </button>
 
         <button
-          class="btn-circle btn-circle-xl mx-4 bg-green-500 hover:bg-green-700 text-white font-bold text-center mx-4"
+          class="btn-circle btn-circle-xl mx-2 bg-green-500 hover:bg-green-700 text-white font-bold text-center"
           @click="publishOwnFeed(true)"
           v-if="!published"
         >
@@ -314,7 +334,7 @@
           </svg>
         </button>
         <button
-          class="btn-circle btn-circle-xl mx-4 bg-red-500 hover:bg-red-700 text-white font-bold text-center mx-4"
+          class="btn-circle btn-circle-xl mx-2 bg-red-500 hover:bg-red-700 text-white font-bold text-center"
           @click="unpublishOwnFeed"
           v-if="published"
           v-tooltip.top="'Leave the video chat'"
@@ -340,7 +360,7 @@
     <!-- Settings Area -->
     <div class="absolute top-2 left-2" v-if="streamEnabled">
       <button
-        class="btn-circle btn-circle-xl mx-4 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center mx-4"
+        class="btn-circle btn-circle-xl mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center"
         @click="showSettings = !showSettings"
         v-tooltip.top="'Open / Close settings'"
       >
@@ -473,6 +493,17 @@ export default {
     desktopCapturer: {
       type: Object,
       default: null,
+    },
+  },
+  methods: {
+    widthOfRemoteVideo(index) {
+      if (index === 0) {
+        return "w-full";
+      } else if (index === 1) {
+        return "w-1/2";
+      } else if (index === 2) {
+        return "w-1/3";
+      }
     },
   },
   data() {
