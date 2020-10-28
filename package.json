@@ -1,10 +1,11 @@
 {
   "private": false,
   "name": "@jaythegeek/janus-video-room",
-  "version": "1.0.9",
+  "version": "1.0.11",
   "description": "A vue component for connecting to Janus",
   "main": "dist/index.js",
   "scripts": {
+    "serve": "vue serve src/JanusVideoRoom.vue",
     "dev": "npm run development",
     "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "watch": "npm run development -- --watch",

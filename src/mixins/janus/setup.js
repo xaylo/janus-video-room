@@ -20,6 +20,8 @@ export const janusSetupMixin = {
             role: "publisher",
             // 
             feeds: [],
+            // 
+            showPermissionsPrompt: false
         }
     },
     computed: {
@@ -141,6 +143,10 @@ export const janusSetupMixin = {
                                 " receiving our " +
                                 medium
                             );
+                        },
+                        consentDialog: (on) => {
+                            this.showPermissionsPrompt = on;
+                            console.log('dialog should be -', on)
                         },
                         webrtcState: (on) => {
                             this.Janus.log(
