@@ -169,7 +169,7 @@ export const janusRemoteMixin = {
                     );
                     if (remoteFeed.rfdisplay.includes("***SCREEN***")) {
                         this.screenShare = true;
-                        this.$refs.remoteVideoElement.classList.add("screen-active");
+                        this.$refs.remoteVideosContainer.classList.add("screen-active");
                         this.$refs.remoteScreenVideoElement.classList.remove("hidden");
                         this.$refs.remoteScreenVideoElement.srcObject = stream;
                     } else {

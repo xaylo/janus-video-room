@@ -38,13 +38,19 @@ export const canvasMixin = {
                 175
             );
 
-            this.canvasContext.drawImage(
-                this.$refs.remoteVideoElement,
-                this.$refs.streamingCanvas.width - 610,
-                this.$refs.streamingCanvas.height - 175,
-                300,
-                175
-            );
+            var remoteWidth = 610;
+
+            this.remoteStreams.forEach(s => {
+                this.canvasContext.drawImage(
+                    this.$refs['remoteVideo' + s.id],
+                    this.$refs.streamingCanvas.width - remoteWidth,
+                    this.$refs.streamingCanvas.height - 175,
+                    300,
+                    175
+                );
+
+                remoteWidth = remoteWidth + 310;
+            });
 
             // Usually would use this to draw in a loop
             // When tab loses focus it cuts out though

@@ -60,7 +60,7 @@ export const screenMixin = {
             });
         },
 
-        enableScreenShare() {
+        async enableScreenShare() {
             if (this.isElectron) {
                 this.enableScreenShareElectron()
             } else {
@@ -72,7 +72,7 @@ export const screenMixin = {
                 };
 
                 var stream =
-                    navigator.mediaDevices.getDisplayMedia(
+                    await navigator.mediaDevices.getDisplayMedia(
                         displayMediaOptions
                     );
                 this.selectScreenSource(stream);

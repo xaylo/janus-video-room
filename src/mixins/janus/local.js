@@ -13,6 +13,7 @@ export const janusLocalMixin = {
                     videoRecv: false,
                     audioSend: useAudio,
                     videoSend: true,
+                    video: "hires"
                 },
                 success: (jsep) => {
                     this.Janus.debug("Got publisher SDP!", jsep);
