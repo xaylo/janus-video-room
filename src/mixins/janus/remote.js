@@ -3,7 +3,8 @@ export const janusRemoteMixin = {
         return {
             remoteStream: null,
             bitrateTimer: [],
-            remoteStreams: 0
+            remoteStreams: 0,
+            streams: []
         }
     },
     methods: {
@@ -181,6 +182,19 @@ export const janusRemoteMixin = {
                         // 
                         // this.fetchParticipants(remoteFeed)
 
+                        var exists = null;
+                        exists = this.streams.some((item) => {
+                            return item.id === remoteFeed.rfindex
+                        })
+
+                        if (!exists) {
+                            var data = {
+                                id: remoteFeed.rfindex,
+                                stream: stream
+                            }
+
+                            this.streams.push(data)
+                        }
 
                         if (document.getElementById('remoteVideo' + remoteFeed.rfindex) === null) {
                             // Container
@@ -273,6 +287,7 @@ export const janusRemoteMixin = {
 
 
 
+
                     if (remoteFeed.rfdisplay.includes("***SCREEN***")) {
                         this.screenShare = false;
                         var els = document.getElementsByClassName('screen-active');
@@ -281,6 +296,11 @@ export const janusRemoteMixin = {
                     } else {
                         document.getElementById('remoteHoldingVideo' + remoteFeed.rfindex).remove();
                         document.getElementById('remoteVideo' + remoteFeed.rfindex).remove();
+
+                        var indexOf = this.streams.findIndex(x => x.id === remoteFeed.rfindex);
+
+                        this.streams.splice(indexOf, 1)
+
                         this.remoteStreams--;
                     }
 

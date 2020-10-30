@@ -102,17 +102,26 @@ export const streamingMixin = {
                     if (this.localStream && this.remoteStream) {
                         const audioContext = new AudioContext();
 
-                        var audioIn_01 = audioContext.createMediaStreamSource(
-                            this.localStream
-                        );
-                        var audioIn_02 = audioContext.createMediaStreamSource(
-                            this.remoteStream
-                        );
-
                         const dest = audioContext.createMediaStreamDestination();
 
-                        audioIn_01.connect(dest);
-                        audioIn_02.connect(dest);
+                        this.streams.forEach(s => {
+                            var newAudio = audioContext.createMediaStreamSource(
+                                s.stream
+                            );
+                            newAudio.connect(dest)
+                        });
+
+                        // var audioIn_01 = audioContext.createMediaStreamSource(
+                        //     this.localStream
+                        // );
+                        // var audioIn_02 = audioContext.createMediaStreamSource(
+                        //     this.remoteStream
+                        // );
+
+                        // const dest = audioContext.createMediaStreamDestination();
+
+                        // audioIn_01.connect(dest);
+                        // audioIn_02.connect(dest);
 
                         this.combinedStreams = new MediaStream([
                             dest.stream.getAudioTracks()[0],
