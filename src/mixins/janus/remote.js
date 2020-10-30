@@ -3,7 +3,7 @@ export const janusRemoteMixin = {
         return {
             remoteStream: null,
             bitrateTimer: [],
-            remoteStreams: []
+            remoteStreams: 0
         }
     },
     methods: {
@@ -159,6 +159,7 @@ export const janusRemoteMixin = {
                     // The subscriber stream is recvonly, we don't expect anything here
                 },
                 onremotestream: (stream) => {
+
                     this.Janus.debug(
                         "Remote feed #" + remoteFeed.rfindex + ", stream:",
                         stream
@@ -169,49 +170,121 @@ export const janusRemoteMixin = {
                     );
                     if (remoteFeed.rfdisplay.includes("***SCREEN***")) {
                         this.screenShare = true;
-                        this.$refs.remoteVideoElement.classList.add("screen-active");
-                        this.$refs.remoteScreenVideoElement.classList.remove("hidden");
+                        this.$refs.remoteVideosContainer.classList.add("screen-active");
+
                         this.$refs.remoteScreenVideoElement.srcObject = stream;
+                        this.$refs.remoteScreenVideoElement.classList.remove("hidden");
                     } else {
                         this.screenShare = false;
                         this.remoteStream = stream;
                         // this.$refs.remoteVideoElement.srcObject = stream;
                         // 
                         // this.fetchParticipants(remoteFeed)
-                        var remoteStreamIndex = this.remoteStreams.findIndex(stream => stream.id === remoteFeed.id)
-                        console.log('does it exist yet?', remoteStreamIndex)
-                        if (remoteStreamIndex === -1) {
-                            var data = {
-                                id: remoteFeed.id,
-                                stream: stream
-                            }
-                            this.remoteStreams.push(data)
 
 
-                            // this.$refs['remoteVideo' + remoteFeed.id].srcObject = stream;
+                        if (document.getElementById('remoteVideo' + remoteFeed.rfindex) === null) {
+                            // Container
+
+                            // Insert holding video?
+                            var holdingVideoEl = document.createElement("video");
+
+                            holdingVideoEl.ref = 'remoteHoldingVideo' + remoteFeed.rfindex;
+                            holdingVideoEl.id = 'remoteHoldingVideo' + remoteFeed.rfindex;
+                            holdingVideoEl.classList += "bg-gray-600 border border-white mx-2"
+
+                            this.$refs.remoteVideosContainer.appendChild(holdingVideoEl)
+
+                            // Insert video into the container
+                            var actualVideoEl = document.createElement("video");
+
+                            actualVideoEl.ref = 'remoteVideo' + remoteFeed.rfindex;
+                            actualVideoEl.id = 'remoteVideo' + remoteFeed.rfindex;
+                            actualVideoEl.classList += "hidden bg-black mx-2 remote-video-el"
+
+                            actualVideoEl.autoplay = true;
+                            actualVideoEl.playsinline = true;
+
+
+                            this.$refs.remoteVideosContainer.appendChild(actualVideoEl)
+
+
+
+
+
+
+
+                            // Bind listener for the start of the video
+
+
+
+                            actualVideoEl.addEventListener("playing", function () {
+                                // Video began playing, lets show it and hide the waiting video
+                                if (this.videoWidth) {
+                                    // Show the video cus we have the width and the media is playing
+                                    // var width = this.videoWidth;
+                                    // var height = this.videoHeight;
+
+
+                                    document.getElementById('remoteHoldingVideo' + remoteFeed.rfindex).remove()
+                                    document.getElementById('remoteVideo' + remoteFeed.rfindex).classList.remove("hidden")
+                                }
+
+                                // if (this.Janus.webRTCAdapter.browserDetails.browser === "firefox") {
+                                //     // Firefox Stable has a bug: width and height are not immediately available after a playing
+                                //     setTimeout(function () {
+                                //         // var width = actualVideoEl.videoWidth;
+                                //         // var height = actualVideoEl.videoHeight;
+                                //     }, 2000);
+                                // }
+                            })
+
+                            this.remoteStreams++;
+
+                            this.Janus.attachMediaStream(actualVideoEl, stream);
+
+                        } // if the remote video element exists
+
+
+
+
+
+
+
+                        var videoTracks = stream.getVideoTracks();
+                        if (!videoTracks || videoTracks.length === 0) {
+                            // No remote video
+                            // Lets hide the main remote window?
+                            // Display no remote video but there is audio?
+                        } else {
+                            // Show the remote video
+
                         }
 
+                    } // end if screen or not
 
 
-                    }
-
-                    var videoTracks = stream.getVideoTracks();
-                    if (!videoTracks || videoTracks.length === 0) {
-                        // No remote video
-                        // Lets hide the main remote window?
-                        // Display no remote video but there is audio?
-                    } else {
-                        // Show the remote video
-                    }
                 },
                 oncleanup: () => {
                     this.Janus.log(
                         " ::: Got a cleanup notification (remote feed " + id + ") :::"
                     );
 
+                    // Find the element and remove it 
 
-                    var remoteStreamIndex = this.remoteStreams.findIndex(stream => stream.id === remoteFeed.id);
-                    this.remoteStreams.splice(remoteStreamIndex, 1)
+
+
+                    if (remoteFeed.rfdisplay.includes("***SCREEN***")) {
+                        this.screenShare = false;
+                        var els = document.getElementsByClassName('screen-active');
+                        var theEl = els[0];
+                        theEl.classList.remove('screen-active')
+                    } else {
+                        document.getElementById('remoteHoldingVideo' + remoteFeed.rfindex).remove();
+                        document.getElementById('remoteVideo' + remoteFeed.rfindex).remove();
+                        this.remoteStreams--;
+                    }
+
+
 
                     // Hide this remote video?
                     if (remoteFeed.spinner);

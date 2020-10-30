@@ -44,7 +44,7 @@
 
     <div
       class="absolute inset-0 flex items-center justify-center"
-      v-if="remoteStreams.length == 0 && !showPermissionsPrompt"
+      v-if="remoteStreams === 0 && !showPermissionsPrompt"
     >
       <div class="waiting">
         <div class="text-center">
@@ -64,7 +64,9 @@
           <h4 class="text-white text-3xl">
             Please allow camera and microphone permissions
           </h4>
-          <p class="text-white">This can be set at the top left of the browser</p>
+          <p class="text-white">
+            This can be set at the top left of the browser
+          </p>
         </div>
       </div>
     </div>
@@ -91,24 +93,29 @@
     <!-- End streaming canvas -->
 
     <!-- Remote Video - displays full screen if no screen being shared to user -->
-    <div class="remote-videos flex flex-wrap" ref="remoteVideosContainer">
-      <video
-        v-for="(s, index) in remoteStreams"
-        :key="s.id"
-        :ref="'remoteVideo' + s.id"
-        :srcObject.prop="s.stream"
-        :class="widthOfRemoteVideo(index)"
-        class="bg-black remote-video p-2 h-auto max-h-screen"
-        autoplay
-        playsinline
-      />
+    <div
+      class="remote-videos flex items-center justify-center h-full"
+      ref="remoteVideosContainer"
+    >
+      <!-- <div v-for="s in remoteStreams" :key="s.id" :class="widthOfRemoteVideo" class="p-2">
+        <video
+          :ref="'remoteVideo' + s.id"
+          :srcObject.prop="s.stream"
+          class="bg-black border border-white"
+          autoplay
+          playsinline
+          style="width: 100%"
+        />
+      </div> -->
     </div>
     <!-- End remote video -->
 
     <!-- Remote screen video - displays -->
     <video
       ref="remoteScreenVideoElement"
-      class="bg-black screen-video hidden w-100 h-100"
+      class="bg-black screen-video hidden object-cover w-full"
+      width="100%"
+      height="auto"
       autoplay
       playsinline
     />
@@ -495,13 +502,13 @@ export default {
       default: null,
     },
   },
-  methods: {
-    widthOfRemoteVideo(index) {
-      if (index === 0) {
+  computed: {
+    widthOfRemoteVideo() {
+      if (this.remoteStreams === 1) {
         return "w-full";
-      } else if (index === 1) {
+      } else if (this.remoteStreams === 2) {
         return "w-1/2";
-      } else if (index === 2) {
+      } else if (this.remoteStreams === 3) {
         return "w-1/3";
       }
     },

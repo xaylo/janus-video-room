@@ -81,6 +81,7 @@ export const janusSetupMixin = {
             var create = {
                 request: "create",
                 room: this.webinarRoomId,
+                publishers: 6
             };
 
             this.xayloConnection.send({
@@ -305,9 +306,9 @@ export const janusSetupMixin = {
                             this.$refs.localVideoElement.muted = "muted";
 
                             //   this.Janus.attachMediaStream($("#myvideo").get(0), stream);
-                            if (this.streamEnabled) {
-                                this.drawLocalVideo();
-                            }
+                            // if (this.streamEnabled) {
+                            //     this.drawLocalVideo();
+                            // }
 
                             if (
                                 this.xayloConnection.webrtcStuff.pc.iceConnectionState !==
