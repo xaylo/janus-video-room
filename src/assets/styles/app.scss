@@ -24,12 +24,20 @@
 //     height: 100%;
 // }
 
+.remote-videos video {
+    max-width: 500px;
+}
+
 .screen-active {
     position: absolute !important;
     bottom: 0.5rem !important;
     right: 240px !important;
-    width: 200px;
-    height: 150px;
+    height: 150px !important;
+}
+
+.screen-active video {
+    width: 200px !important;
+    height: 150px !important;
     border-radius: 0.25rem;
 }
 

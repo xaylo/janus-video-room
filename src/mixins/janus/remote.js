@@ -199,7 +199,8 @@ export const janusRemoteMixin = {
 
                             actualVideoEl.ref = 'remoteVideo' + remoteFeed.rfindex;
                             actualVideoEl.id = 'remoteVideo' + remoteFeed.rfindex;
-                            actualVideoEl.classList += "hidden bg-black border border-white mx-2 remote-video-el"
+                            actualVideoEl.classList += "hidden bg-black mx-2 remote-video-el"
+
                             actualVideoEl.autoplay = true;
                             actualVideoEl.playsinline = true;
 
@@ -224,7 +225,7 @@ export const janusRemoteMixin = {
                                     // var height = this.videoHeight;
 
 
-                                    document.getElementById('remoteHoldingVideo' + remoteFeed.rfindex).classList.add("hidden")
+                                    document.getElementById('remoteHoldingVideo' + remoteFeed.rfindex).remove()
                                     document.getElementById('remoteVideo' + remoteFeed.rfindex).classList.remove("hidden")
                                 }
 
@@ -270,10 +271,20 @@ export const janusRemoteMixin = {
 
                     // Find the element and remove it 
 
-                    document.getElementById('remoteHoldingVideo' + remoteFeed.rfindex).remove();
-                    document.getElementById('remoteVideo' + remoteFeed.rfindex).remove();
 
-                    this.remoteStreams--;
+
+                    if (remoteFeed.rfdisplay.includes("***SCREEN***")) {
+                        this.screenShare = false;
+                        var els = document.getElementsByClassName('screen-active');
+                        var theEl = els[0];
+                        theEl.classList.remove('screen-active')
+                    } else {
+                        document.getElementById('remoteHoldingVideo' + remoteFeed.rfindex).remove();
+                        document.getElementById('remoteVideo' + remoteFeed.rfindex).remove();
+                        this.remoteStreams--;
+                    }
+
+
 
                     // Hide this remote video?
                     if (remoteFeed.spinner);

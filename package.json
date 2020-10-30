@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "@jaythegeek/janus-video-room",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "A vue component for connecting to Janus",
   "main": "dist/index.js",
   "scripts": {
