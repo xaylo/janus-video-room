@@ -2473,11 +2473,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     widthOfRemoteVideo: function widthOfRemoteVideo() {
-      if (this.remoteStreams.length === 0) {
+      if (this.remoteStreams === 1) {
         return "w-full";
-      } else if (this.remoteStreams.length === 1) {
+      } else if (this.remoteStreams === 2) {
         return "w-1/2";
-      } else if (this.remoteStreams.length === 2) {
+      } else if (this.remoteStreams === 3) {
         return "w-1/3";
       }
     }
@@ -7008,7 +7008,7 @@ var render = function() {
           : _vm._e()
       ]),
       _vm._v(" "),
-      _vm.remoteStreams.length == 0 && !_vm.showPermissionsPrompt
+      _vm.remoteStreams === 0 && !_vm.showPermissionsPrompt
         ? _c(
             "div",
             {
@@ -7050,30 +7050,10 @@ var render = function() {
       _vm._v(" "),
       _c("canvas", { ref: "streamingCanvas", staticClass: "hidden" }),
       _vm._v(" "),
-      _c(
-        "div",
-        {
-          ref: "remoteVideosContainer",
-          staticClass: "remote-videos flex items-center justify-center h-full"
-        },
-        _vm._l(_vm.remoteStreams, function(s) {
-          return _c(
-            "div",
-            { key: s.id, staticClass: "p-2", class: _vm.widthOfRemoteVideo },
-            [
-              _c("video", {
-                ref: "remoteVideo" + s.id,
-                refInFor: true,
-                staticClass: "bg-black border border-white",
-                staticStyle: { width: "100%" },
-                attrs: { autoplay: "", playsinline: "" },
-                domProps: { srcObject: s.stream }
-              })
-            ]
-          )
-        }),
-        0
-      ),
+      _c("div", {
+        ref: "remoteVideosContainer",
+        staticClass: "remote-videos flex items-center justify-center h-full"
+      }),
       _vm._v(" "),
       _c("video", {
         ref: "remoteScreenVideoElement",
@@ -15686,6 +15666,12 @@ var audioMixin = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canvasMixin", function() { return canvasMixin; });
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 var canvasMixin = {
   data: function data() {
     return {
@@ -15699,14 +15685,15 @@ var canvasMixin = {
     };
   },
   computed: {
+    remoteVideoElements: function remoteVideoElements() {
+      return document.getElementsByClassName('remote-video-el');
+    },
     canvasContext: function canvasContext() {
       return this.$refs.streamingCanvas.getContext("2d");
     }
   },
   methods: {
     drawLocalVideo: function drawLocalVideo() {
-      var _this = this;
-
       if (!this.canvasContext) {
         this.canvasContext = this.$refs.streamingCanvas.getContext("2d", {
           alpha: false
@@ -15722,17 +15709,28 @@ var canvasMixin = {
 
       this.canvasContext.drawImage(this.$refs.localVideoElement, this.$refs.streamingCanvas.width - 300, this.$refs.streamingCanvas.height - 175, 300, 175);
       var remoteWidth = 610;
-      this.remoteStreams.forEach(function (s) {
-        _this.canvasContext.drawImage(_this.$refs['remoteVideo' + s.id], _this.$refs.streamingCanvas.width - remoteWidth, _this.$refs.streamingCanvas.height - 175, 300, 175);
 
-        remoteWidth = remoteWidth + 310;
-      }); // Usually would use this to draw in a loop
-      // When tab loses focus it cuts out though
-      // that is the reason for the audio timer loop below
-      // requestAnimationFrame(this.drawLocalVideo);
+      var _iterator = _createForOfIteratorHelper(this.remoteVideoElements),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var element = _step.value;
+          this.canvasContext.drawImage(element, this.$refs.streamingCanvas.width - remoteWidth, this.$refs.streamingCanvas.height - 175, 300, 175);
+          remoteWidth = remoteWidth + 310;
+        } // Usually would use this to draw in a loop
+        // When tab loses focus it cuts out though
+        // that is the reason for the audio timer loop below
+        // requestAnimationFrame(this.drawLocalVideo);
+
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
     },
     audioTimerLoop: function audioTimerLoop(frequency) {
-      var _this2 = this;
+      var _this = this;
 
       // AudioContext time parameters are in seconds
       this.freq = frequency / 1000;
@@ -15746,7 +15744,7 @@ var canvasMixin = {
       this.stopped = false; // return a function to stop our loop
 
       return function () {
-        _this2.stopped = true;
+        _this.stopped = true;
       };
     },
     onOSCend: function onOSCend() {
@@ -15770,10 +15768,9 @@ var canvasMixin = {
       this.stopCanvasLoop();
     }
   },
-  mounted: function mounted() {
-    if (this.streamEnabled) {
-      this.startCanvasLoop();
-    }
+  mounted: function mounted() {// if (this.streamEnabled) {
+    //     this.startCanvasLoop();
+    // }
   }
 };
 
@@ -15806,7 +15803,8 @@ var janusLocalMixin = {
           videoRecv: false,
           audioSend: useAudio,
           videoSend: true,
-          video: "hires"
+          video: "lowres" // video: "hires"
+
         },
         success: function success(jsep) {
           _this.Janus.debug("Got publisher SDP!", jsep);
@@ -15886,7 +15884,7 @@ var janusRemoteMixin = {
     return {
       remoteStream: null,
       bitrateTimer: [],
-      remoteStreams: []
+      remoteStreams: 0
     };
   },
   methods: {
@@ -16029,49 +16027,76 @@ var janusRemoteMixin = {
 
             _this.$refs.remoteVideosContainer.classList.add("screen-active");
 
-            _this.$refs.remoteScreenVideoElement.classList.remove("hidden");
-
             _this.$refs.remoteScreenVideoElement.srcObject = stream;
+
+            _this.$refs.remoteScreenVideoElement.classList.remove("hidden");
           } else {
             _this.screenShare = false;
             _this.remoteStream = stream; // this.$refs.remoteVideoElement.srcObject = stream;
             // 
             // this.fetchParticipants(remoteFeed)
 
-            var remoteStreamIndex = _this.remoteStreams.findIndex(function (stream) {
-              return stream.id === remoteFeed.id;
-            });
+            if (document.getElementById('remoteVideo' + remoteFeed.rfindex) === null) {
+              // Container
+              // Insert holding video?
+              var holdingVideoEl = document.createElement("video");
+              holdingVideoEl.ref = 'remoteHoldingVideo' + remoteFeed.rfindex;
+              holdingVideoEl.id = 'remoteHoldingVideo' + remoteFeed.rfindex;
+              holdingVideoEl.classList += "bg-gray-600 border border-white mx-2";
 
-            console.log('does it exist yet?', remoteStreamIndex);
+              _this.$refs.remoteVideosContainer.appendChild(holdingVideoEl); // Insert video into the container
 
-            if (remoteStreamIndex === -1) {
-              var data = {
-                id: remoteFeed.id,
-                stream: stream
-              };
 
-              _this.remoteStreams.push(data); // this.$refs['remoteVideo' + remoteFeed.id].srcObject = stream;
+              var actualVideoEl = document.createElement("video");
+              actualVideoEl.ref = 'remoteVideo' + remoteFeed.rfindex;
+              actualVideoEl.id = 'remoteVideo' + remoteFeed.rfindex;
+              actualVideoEl.classList += "hidden bg-black border border-white mx-2 remote-video-el";
+              actualVideoEl.autoplay = true;
+              actualVideoEl.playsinline = true;
 
-            }
-          }
+              _this.$refs.remoteVideosContainer.appendChild(actualVideoEl); // Bind listener for the start of the video
 
-          var videoTracks = stream.getVideoTracks();
 
-          if (!videoTracks || videoTracks.length === 0) {// No remote video
-            // Lets hide the main remote window?
-            // Display no remote video but there is audio?
-          } else {// Show the remote video
-            }
+              actualVideoEl.addEventListener("playing", function () {
+                // Video began playing, lets show it and hide the waiting video
+                if (this.videoWidth) {
+                  // Show the video cus we have the width and the media is playing
+                  // var width = this.videoWidth;
+                  // var height = this.videoHeight;
+                  document.getElementById('remoteHoldingVideo' + remoteFeed.rfindex).classList.add("hidden");
+                  document.getElementById('remoteVideo' + remoteFeed.rfindex).classList.remove("hidden");
+                } // if (this.Janus.webRTCAdapter.browserDetails.browser === "firefox") {
+                //     // Firefox Stable has a bug: width and height are not immediately available after a playing
+                //     setTimeout(function () {
+                //         // var width = actualVideoEl.videoWidth;
+                //         // var height = actualVideoEl.videoHeight;
+                //     }, 2000);
+                // }
+
+              });
+              _this.remoteStreams++;
+
+              _this.Janus.attachMediaStream(actualVideoEl, stream);
+            } // if the remote video element exists
+
+
+            var videoTracks = stream.getVideoTracks();
+
+            if (!videoTracks || videoTracks.length === 0) {// No remote video
+              // Lets hide the main remote window?
+              // Display no remote video but there is audio?
+            } else {// Show the remote video
+              }
+          } // end if screen or not
+
         },
         oncleanup: function oncleanup() {
-          _this.Janus.log(" ::: Got a cleanup notification (remote feed " + id + ") :::");
+          _this.Janus.log(" ::: Got a cleanup notification (remote feed " + id + ") :::"); // Find the element and remove it 
 
-          var remoteStreamIndex = _this.remoteStreams.findIndex(function (stream) {
-            return stream.id === remoteFeed.id;
-          });
 
-          _this.remoteStreams.splice(remoteStreamIndex, 1); // Hide this remote video?
-
+          document.getElementById('remoteHoldingVideo' + remoteFeed.rfindex).remove();
+          document.getElementById('remoteVideo' + remoteFeed.rfindex).remove();
+          _this.remoteStreams--; // Hide this remote video?
 
           if (remoteFeed.spinner) ;
           remoteFeed.spinner = null; // If showing bitrate and res reset it here
@@ -16172,7 +16197,8 @@ var janusSetupMixin = {
       };
       var create = {
         request: "create",
-        room: this.webinarRoomId
+        room: this.webinarRoomId,
+        publishers: 6
       };
       this.xayloConnection.send({
         message: exists,
@@ -16382,10 +16408,9 @@ var janusSetupMixin = {
               _this4.localStream = stream;
               _this4.$refs.localVideoElement.srcObject = stream;
               _this4.$refs.localVideoElement.muted = "muted"; //   this.Janus.attachMediaStream($("#myvideo").get(0), stream);
-
-              if (_this4.streamEnabled) {
-                _this4.drawLocalVideo();
-              }
+              // if (this.streamEnabled) {
+              //     this.drawLocalVideo();
+              // }
 
               if (_this4.xayloConnection.webrtcStuff.pc.iceConnectionState !== "completed" && _this4.xayloConnection.webrtcStuff.pc.iceConnectionState !== "connected") {
                 console.log("connecting local video"); // show a spinner or something
@@ -16916,6 +16941,8 @@ var streamingMixin = {
     },
     startBroadcasting: function startBroadcasting() {
       // update the room.streaming thing
+      // this.drawLocalVideo();
+      this.startCanvasLoop();
       this.streamingLocally = true;
       this.room.streaming = true;
       this.updateRoomStreaming();
@@ -16923,7 +16950,8 @@ var streamingMixin = {
       this.beginCountdown();
     },
     stopBroadcasting: function stopBroadcasting() {
-      // update the room.streaming thing
+      this.stopCanvasLoop(); // update the room.streaming thing
+
       this.liveIndicator = false;
       this.streamingLocally = false;
       this.room.streaming = false;
@@ -16938,6 +16966,7 @@ var streamingMixin = {
       if (this.webSocket) {
         this.stopStreamViaWebSocket();
       } else {
+        this.drawLocalVideo();
         this.startStreamViaWebSocket();
       }
     },

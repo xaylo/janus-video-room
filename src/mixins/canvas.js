@@ -11,6 +11,9 @@ export const canvasMixin = {
         }
     },
     computed: {
+        remoteVideoElements() {
+            return document.getElementsByClassName('remote-video-el')
+        },
         canvasContext() {
             return this.$refs.streamingCanvas.getContext("2d");
         },
@@ -38,19 +41,20 @@ export const canvasMixin = {
                 175
             );
 
+
             var remoteWidth = 610;
 
-            this.remoteStreams.forEach(s => {
+            for (let element of this.remoteVideoElements) {
                 this.canvasContext.drawImage(
-                    this.$refs['remoteVideo' + s.id],
+                    element,
                     this.$refs.streamingCanvas.width - remoteWidth,
                     this.$refs.streamingCanvas.height - 175,
                     300,
                     175
                 );
-
                 remoteWidth = remoteWidth + 310;
-            });
+            }
+
 
             // Usually would use this to draw in a loop
             // When tab loses focus it cuts out though
@@ -101,8 +105,8 @@ export const canvasMixin = {
     },
 
     mounted() {
-        if (this.streamEnabled) {
-            this.startCanvasLoop();
-        }
+        // if (this.streamEnabled) {
+        //     this.startCanvasLoop();
+        // }
     },
 }

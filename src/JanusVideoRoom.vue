@@ -44,7 +44,7 @@
 
     <div
       class="absolute inset-0 flex items-center justify-center"
-      v-if="remoteStreams.length == 0 && !showPermissionsPrompt"
+      v-if="remoteStreams === 0 && !showPermissionsPrompt"
     >
       <div class="waiting">
         <div class="text-center">
@@ -97,7 +97,7 @@
       class="remote-videos flex items-center justify-center h-full"
       ref="remoteVideosContainer"
     >
-      <div v-for="s in remoteStreams" :key="s.id" :class="widthOfRemoteVideo" class="p-2">
+      <!-- <div v-for="s in remoteStreams" :key="s.id" :class="widthOfRemoteVideo" class="p-2">
         <video
           :ref="'remoteVideo' + s.id"
           :srcObject.prop="s.stream"
@@ -106,7 +106,7 @@
           playsinline
           style="width: 100%"
         />
-      </div>
+      </div> -->
     </div>
     <!-- End remote video -->
 
@@ -504,11 +504,11 @@ export default {
   },
   computed: {
     widthOfRemoteVideo() {
-      if (this.remoteStreams.length === 0) {
+      if (this.remoteStreams === 1) {
         return "w-full";
-      } else if (this.remoteStreams.length === 1) {
+      } else if (this.remoteStreams === 2) {
         return "w-1/2";
-      } else if (this.remoteStreams.length === 2) {
+      } else if (this.remoteStreams === 3) {
         return "w-1/3";
       }
     },

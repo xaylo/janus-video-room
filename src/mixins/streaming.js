@@ -61,7 +61,8 @@ export const streamingMixin = {
         },
         startBroadcasting() {
             // update the room.streaming thing
-
+            // this.drawLocalVideo();
+            this.startCanvasLoop();
             this.streamingLocally = true;
             this.room.streaming = true;
             this.updateRoomStreaming();
@@ -70,6 +71,7 @@ export const streamingMixin = {
         },
 
         stopBroadcasting() {
+            this.stopCanvasLoop();
             // update the room.streaming thing
             this.liveIndicator = false;
             this.streamingLocally = false;
@@ -85,6 +87,7 @@ export const streamingMixin = {
             if (this.webSocket) {
                 this.stopStreamViaWebSocket();
             } else {
+                this.drawLocalVideo();
                 this.startStreamViaWebSocket();
             }
         },
