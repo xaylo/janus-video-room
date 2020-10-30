@@ -111,6 +111,14 @@ export const streamingMixin = {
                             newAudio.connect(dest)
                         });
 
+                        var localAudio = audioContext.createMediaStreamSource(
+                            this.localStream
+                        );
+
+                        localAudio.connect(dest);
+
+
+
                         // var audioIn_01 = audioContext.createMediaStreamSource(
                         //     this.localStream
                         // );
