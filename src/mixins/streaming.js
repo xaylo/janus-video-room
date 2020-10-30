@@ -99,7 +99,7 @@ export const streamingMixin = {
 
                     this.canvasStream = this.$refs.streamingCanvas.captureStream(30);
 
-                    if (this.localStream && this.remoteStream) {
+                    if (this.localStream && this.streams.length > 0) {
                         const audioContext = new AudioContext();
 
                         const dest = audioContext.createMediaStreamDestination();
@@ -117,19 +117,6 @@ export const streamingMixin = {
 
                         localAudio.connect(dest);
 
-
-
-                        // var audioIn_01 = audioContext.createMediaStreamSource(
-                        //     this.localStream
-                        // );
-                        // var audioIn_02 = audioContext.createMediaStreamSource(
-                        //     this.remoteStream
-                        // );
-
-                        // const dest = audioContext.createMediaStreamDestination();
-
-                        // audioIn_01.connect(dest);
-                        // audioIn_02.connect(dest);
 
                         this.combinedStreams = new MediaStream([
                             dest.stream.getAudioTracks()[0],

@@ -26,33 +26,78 @@ export const canvasMixin = {
                 });
             }
 
-            this.$refs.streamingCanvas.width = 1280;
-            this.$refs.streamingCanvas.height = 900;
+
 
             if (this.screenVideoElement) {
+                this.$refs.streamingCanvas.width = 1280;
+                this.$refs.streamingCanvas.height = 900;
                 this.canvasContext.drawImage(this.screenVideoElement, 0, 0, 1280, 720);
-            }
 
-            this.canvasContext.drawImage(
-                this.$refs.localVideoElement,
-                this.$refs.streamingCanvas.width - 300,
-                this.$refs.streamingCanvas.height - 175,
-                300,
-                175
-            );
-
-
-            var remoteWidth = 610;
-
-            for (let element of this.remoteVideoElements) {
                 this.canvasContext.drawImage(
-                    element,
-                    this.$refs.streamingCanvas.width - remoteWidth,
+                    this.$refs.localVideoElement,
+                    this.$refs.streamingCanvas.width - 300,
                     this.$refs.streamingCanvas.height - 175,
                     300,
                     175
                 );
-                remoteWidth = remoteWidth + 310;
+
+                var remoteWidth = 610;
+
+                for (let element of this.remoteVideoElements) {
+                    this.canvasContext.drawImage(
+                        element,
+                        this.$refs.streamingCanvas.width - remoteWidth,
+                        this.$refs.streamingCanvas.height - 175,
+                        300,
+                        175
+                    );
+                    remoteWidth = remoteWidth + 310;
+                }
+
+            } else {
+                this.$refs.streamingCanvas.width = 1280;
+                this.$refs.streamingCanvas.height = 720;
+
+                var position = 0;
+                var x, y;
+
+                if (position == 0) {
+                    x = 0;
+                    y = 0;
+                }
+
+
+                this.canvasContext.drawImage(this.$refs.localVideoElement, x, y, this.$refs.streamingCanvas.width / 2, this.$refs.streamingCanvas.height / 2);
+
+                position++;
+
+
+                for (let element of this.remoteVideoElements) {
+
+                    if (position == 1) {
+                        x = this.$refs.streamingCanvas.width / 2;
+                        y = 0;
+                    }
+                    if (position == 2) {
+                        x = 0;
+                        y = this.$refs.streamingCanvas.height / 2;
+                    }
+                    if (position == 3) {
+                        x = this.$refs.streamingCanvas.width / 2;
+                        y = this.$refs.streamingCanvas.height / 2;
+                    }
+
+                    // ctx.clearRect(v, x, y, this.$refs.streamingCanvas.width / 2, this.$refs.streamingCanvas.height / 2);
+                    this.canvasContext.drawImage(element, x, y, this.$refs.streamingCanvas.width / 2, this.$refs.streamingCanvas.height / 2);
+
+                    position++;
+                    if (position > 3) {
+                        position = 0;
+                    }
+
+                }
+
+
             }
 
 
