@@ -94,7 +94,7 @@
 
     <!-- Remote Video - displays full screen if no screen being shared to user -->
     <div
-      class="remote-videos flex items-center justify-center h-full"
+      class="remote-videos flex justify-center items-start md:items-center h-full"
       ref="remoteVideosContainer"
     >
       <!-- <div v-for="s in remoteStreams" :key="s.id" :class="widthOfRemoteVideo" class="p-2">
@@ -122,7 +122,7 @@
     <!-- End remote screen video -->
 
     <!-- Local video - plays bottom right -->
-    <div ref="localVideoContainer" class="local-video-container">
+    <div ref="localVideoContainer" class="local-video-container mb-24 md:mb-0">
       <i class="far fa-spinner fa-spin text-white" v-show="!published"></i>
       <div class="local-video">
         <div
@@ -469,7 +469,7 @@ export default {
     roomData: {
       type: Object,
       default: () => ({
-        id: 1,
+        id: 2150,
       }),
       validator(x) {
         return x != null;
@@ -510,6 +510,8 @@ export default {
         return "w-1/2";
       } else if (this.remoteStreams === 3) {
         return "w-1/3";
+      } else {
+        return "w-full";
       }
     },
   },
