@@ -1,5 +1,5 @@
 <template>
-  <div class="video-wrapper">
+  <div class="relative bg-black vh-100 vw-100">
     <div class="streaming-control-area" v-if="room && streamEnabled">
       <button
         class="bg-green-600 hover:bg-green-700 text-white font-bold text-center rounded mx-3 py-2 px-4"
@@ -122,51 +122,33 @@
     <!-- End remote screen video -->
 
     <!-- Local video - plays bottom right -->
-    <div
-      ref="localVideoContainer"
-      class="absolute sm:top-0 md:bottom-0 right-0 md:mb-4 md:mr-4"
-    >
-      <i class="far fa-spinner fa-spin text-white" v-show="!published"></i>
-      <div class="local-video">
-        <div
-          v-if="!videoEnabled"
-          class="flex bg-white rounded text-center"
-          style="width: 200px; height: 150px"
-        >
-          <div class="m-auto">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              class="h-10 mx-auto"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-              />
-            </svg>
-            <h5 class="m-auto">Camera Disabled</h5>
-          </div>
+    <div ref="localVideoContainer" class="">
+      <div
+        v-if="!videoEnabled"
+        class="flex bg-white rounded text-center"
+        style="width: 200px; height: 150px"
+      >
+        <div class="m-auto">
+          <h5 class="m-auto">Camera Disabled</h5>
         </div>
-        <video
-          class="hidden"
-          ref="localVideoElementStream"
-          autoplay
-          playsinline
-          muted="muted"
-        />
-        <video
-          class="rounded bg-black local-video border border-white"
-          ref="localVideoElement"
-          autoplay
-          playsinline
-          muted="muted"
-        />
       </div>
+      <video
+        class="hidden"
+        ref="localVideoElementStream"
+        autoplay
+        playsinline
+        muted="muted"
+      />
+
+      <video
+        class="rounded bg-black border border-white absolute top-0 md:bottom-0 right-0 mr-2 mt-2 w-1/2 md:w-1/4 h-auto"
+        ref="localVideoElement"
+        autoplay
+        playsinline
+        muted="muted"
+      />
     </div>
+
     <!-- End local video -->
 
     <div class="absolute bottom-0 left-0 md:mb-4 mb-2 ml-2 md:ml-4">
@@ -463,25 +445,12 @@ export default {
   border-radius: 0.25rem;
 }
 
-.remote-video video {
-}
-
 .local-video video {
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
   /* Safari and Chrome */
   -moz-transform: rotateY(180deg);
   /* Firefox */
-}
-
-.local-video {
-  width: 200px;
-}
-
-@media (min-width: 768px) {
-  .local-video {
-    width: 300px;
-  }
 }
 
 .screen-video {
@@ -502,5 +471,9 @@ export default {
   right: 0.5rem;
   width: auto;
   z-index: 9999;
+}
+
+.bg-black {
+  background: black;
 }
 </style>
