@@ -204,22 +204,27 @@ export const janusRemoteMixin = {
 
                             holdingVideoEl.ref = 'remoteHoldingVideo' + remoteFeed.rfindex;
                             holdingVideoEl.id = 'remoteHoldingVideo' + remoteFeed.rfindex;
-                            holdingVideoEl.classList += "bg-gray-600 border border-white mx-2"
+                            holdingVideoEl.classList += "bg-gray-300 border border-white mx-2";
 
                             this.$refs.remoteVideosContainer.appendChild(holdingVideoEl)
 
                             // Insert video into the container
+
+                            var divAppend = document.createElement("div");
+                            divAppend.classList += "flex-1";
                             var actualVideoEl = document.createElement("video");
 
                             actualVideoEl.ref = 'remoteVideo' + remoteFeed.rfindex;
                             actualVideoEl.id = 'remoteVideo' + remoteFeed.rfindex;
-                            actualVideoEl.classList += "hidden bg-black mx-2 remote-video-el"
+                            actualVideoEl.classList += "hidden bg-black remote-video-el border border-green-400 rounded"
 
                             actualVideoEl.autoplay = true;
                             actualVideoEl.playsinline = true;
 
+                            divAppend.appendChild(actualVideoEl);
 
-                            this.$refs.remoteVideosContainer.appendChild(actualVideoEl)
+
+                            this.$refs.remoteVideosContainer.appendChild(divAppend)
 
 
 
@@ -231,7 +236,7 @@ export const janusRemoteMixin = {
 
 
 
-                            actualVideoEl.addEventListener("playing", function () {
+                            actualVideoEl.addEventListener("playing", function() {
                                 // Video began playing, lets show it and hide the waiting video
                                 if (this.videoWidth) {
                                     // Show the video cus we have the width and the media is playing

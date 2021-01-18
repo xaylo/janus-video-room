@@ -2,7 +2,7 @@
   <div class="video-wrapper">
     <div class="streaming-control-area" v-if="room && streamEnabled">
       <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold text-center rounded mx-3 py-2 px-4"
+        class="bg-green-600 hover:bg-green-700 text-white font-bold text-center rounded mx-3 py-2 px-4"
         v-if="!room.streaming"
         @click="startBroadcasting"
       >
@@ -10,7 +10,7 @@
       </button>
 
       <button
-        class="bg-red-500 hover:bg-red-700 text-white font-bold text-center rounded mx-3 py-2 px-4"
+        class="bg-red-600 hover:bg-red-700 text-white font-bold text-center rounded mx-3 py-2 px-4"
         v-if="room.streaming && streamingLocally"
         @click="stopBroadcasting"
       >
@@ -94,7 +94,7 @@
 
     <!-- Remote Video - displays full screen if no screen being shared to user -->
     <div
-      class="remote-videos flex justify-center items-start md:items-center h-full"
+      class="remote-videos flex flex-wrap justify-center items-center h-full md:px-8"
       ref="remoteVideosContainer"
     >
       <!-- <div v-for="s in remoteStreams" :key="s.id" :class="widthOfRemoteVideo" class="p-2">
@@ -122,7 +122,10 @@
     <!-- End remote screen video -->
 
     <!-- Local video - plays bottom right -->
-    <div ref="localVideoContainer" class="local-video-container mb-24 md:mb-0">
+    <div
+      ref="localVideoContainer"
+      class="absolute sm:top-0 md:bottom-0 right-0 md:mb-4 md:mr-4"
+    >
       <i class="far fa-spinner fa-spin text-white" v-show="!published"></i>
       <div class="local-video">
         <div
@@ -156,10 +159,8 @@
           muted="muted"
         />
         <video
-          class="rounded bg-black local-video border-2 border-white"
+          class="rounded bg-black local-video border border-white"
           ref="localVideoElement"
-          width="200"
-          height="150"
           autoplay
           playsinline
           muted="muted"
@@ -168,7 +169,7 @@
     </div>
     <!-- End local video -->
 
-    <div class="control-area">
+    <div class="absolute bottom-0 left-0 md:mb-4 mb-2 ml-2 md:ml-4">
       <div class="flex flex-wrap mb-3 ml-4">
         <!-- Mini screen - displays a small preview of the current screen share -->
         <!-- Grows on hover -->
@@ -182,97 +183,45 @@
       </div>
 
       <!-- Controls -->
-      <div class="flex flex-wrap pl-6">
+      <div class="flex flex-wrap">
         <button
-          class="btn-circle btn-circle-xl mr-2 bg-red-500 hover:bg-red-700 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-red-600 hover:bg-red-700 text-white font-bold text-center"
           v-if="audioEnabled"
           @click="toggleMute"
           v-tooltip.top="'Your mic is currently on, click to mute'"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class="text-white h-8 mx-auto"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-            />
-          </svg>
+          <i class="fad fa-microphone"></i>
         </button>
         <button
-          class="btn-circle btn-circle-xl mx-2 bg-green-500 hover:bg-green-700 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-green-600 hover:bg-green-700 text-white font-bold text-center"
           v-if="!audioEnabled"
           @click="toggleMute"
           v-tooltip.top="'Your mic is currently off, click to unmute'"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class="text-white h-8 mx-auto"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-            />
-          </svg>
+          <i class="fad fa-microphone-slash"></i>
         </button>
 
         <!-- Camera -->
         <button
-          class="btn-circle btn-circle-xl mx-2 bg-red-500 hover:bg-red-700 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-red-600 hover:bg-red-700 text-white font-bold text-center"
           v-if="videoEnabled"
           @click="toggleVideo"
           v-tooltip.top="'Your camera is currently on, click to turn it off'"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class="text-white h-8 mx-auto"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-            />
-          </svg>
+          <i class="fad fa-video"></i>
         </button>
         <button
-          class="btn-circle btn-circle-xl mx-2 bg-green-500 hover:bg-green-700 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-green-600 hover:bg-green-700 text-white font-bold text-center"
           v-if="!videoEnabled"
           @click="toggleVideo"
           v-tooltip.top="'Your camera is currently off, click to turn it on'"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class="text-white h-8 mx-auto"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-            />
-          </svg>
+          <i class="fad fa-video-slash"></i>
         </button>
         <!-- End camera -->
 
         <button
-          class="btn-circle btn-circle-xl mx-2 bg-green-500 hover:bg-green-700 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-green-600 hover:bg-green-700 text-white font-bold text-center"
           v-if="!localScreenShare && !screenShare"
           :disabled="screenShare || screenButtonBusy"
           @click="enableScreenShare"
@@ -280,23 +229,10 @@
             'You are not sharing your screen, click to begin sharing'
           "
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class="text-white h-8 mx-auto"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
-          </svg>
+          <i class="fad fa-desktop"></i>
         </button>
         <button
-          class="btn-circle btn-circle-xl mx-2 bg-red-500 hover:bg-red-700 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-red-600 hover:bg-red-700 text-white font-bold text-center"
           v-if="localScreenShare"
           :disabled="screenButtonBusy"
           @click="endScreenShare"
@@ -304,62 +240,23 @@
             'You are currently sharing your screen, click to stop sharing'
           "
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class="text-white h-8 mx-auto"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
-          </svg>
+          <i class="fad fa-desktop"></i>
         </button>
 
         <button
-          class="btn-circle btn-circle-xl mx-2 bg-green-500 hover:bg-green-700 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-green-600 hover:bg-green-700 text-white font-bold text-center"
           @click="publishOwnFeed(true)"
           v-if="!published"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class="h-8 text-white mx-auto"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
+          <i class="fad fa-play"></i>
         </button>
         <button
-          class="btn-circle btn-circle-xl mx-2 bg-red-500 hover:bg-red-700 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-red-600 hover:bg-red-700 text-white font-bold text-center"
           @click="unpublishOwnFeed"
           v-if="published"
           v-tooltip.top="'Leave the video chat'"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class="h-8 text-white mx-auto"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-            />
-          </svg>
+          <i class="fad fa-stop"></i>
         </button>
       </div>
       <!-- End controls -->
@@ -367,30 +264,11 @@
     <!-- Settings Area -->
     <div class="absolute top-2 left-2" v-if="streamEnabled">
       <button
-        class="btn-circle btn-circle-xl mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center"
+        class="btn-circle btn-circle-xl mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold text-center"
         @click="showSettings = !showSettings"
         v-tooltip.top="'Open / Close settings'"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          class="h-8 text-white mx-auto"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-          />
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-        </svg>
+        <i class="fad fa-sliders-v-square"></i>
       </button>
     </div>
     <div
@@ -401,20 +279,7 @@
         class="close-settings absolute top-1 right-1 cursor-pointer"
         @click="showSettings = false"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          class="h-8 mx-auto"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
+        <i class="fad fa-times-circle"></i>
       </div>
       <h4 class="font-bold underline mb-3">Screen Capture Settings</h4>
       <div class="w-full">
@@ -542,4 +407,100 @@ export default {
 </script>
 
 <style lang="scss">
+.video-wrapper {
+  margin: 0 !important;
+  overflow: hidden;
+  width: 100%;
+  background: black !important;
+}
+
+.inside-wrapper {
+  padding-top: 0rem !important;
+  margin-top: 0rem !important;
+  overflow: hidden;
+}
+
+.video-wrapper {
+  height: 100vh;
+  width: 100vw;
+}
+
+// .remote-video {
+//     width: 100%;
+//     height: 100%;
+// }
+// .remote-videos {
+//     position: absolute;
+//     top: 0;
+//     bottom: 0;
+//     width: 100%;
+//     height: 100%;
+//     overflow: hidden;
+// }
+.remote-videos video {
+  /* Make video to at least 100% wide and tall */
+  min-width: 100%;
+  min-height: 100%;
+  /* Setting width & height to auto prevents the browser from stretching or squishing the video */
+  width: auto;
+  height: auto;
+}
+
+// .remote-videos video {
+//     width: 100% !important;
+//     height: 100% !important;
+// }
+.screen-active {
+  position: absolute !important;
+  bottom: 0.5rem !important;
+  right: 240px !important;
+  height: 150px !important;
+}
+
+.screen-active video {
+  width: 200px !important;
+  height: 150px !important;
+  border-radius: 0.25rem;
+}
+
+.remote-video video {
+}
+
+.local-video video {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  /* Safari and Chrome */
+  -moz-transform: rotateY(180deg);
+  /* Firefox */
+}
+
+.local-video {
+  width: 200px;
+}
+
+@media (min-width: 768px) {
+  .local-video {
+    width: 300px;
+  }
+}
+
+.screen-video {
+  width: auto;
+  max-width: 100% !important;
+}
+
+.control-area {
+  position: absolute;
+  bottom: 1rem;
+  width: 100%;
+  z-index: 99999 !important;
+}
+
+.streaming-control-area {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: auto;
+  z-index: 9999;
+}
 </style>

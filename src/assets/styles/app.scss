@@ -1,83 +1,12 @@
+// Fontawesome
+$fa-font-path: '~@fortawesome/fontawesome-pro/webfonts';
+@import "~@fortawesome/fontawesome-pro/scss/brands";
+@import "~@fortawesome/fontawesome-pro/scss/duotone";
+@import "~@fortawesome/fontawesome-pro/scss/light";
+@import "~@fortawesome/fontawesome-pro/scss/regular";
+@import "~@fortawesome/fontawesome-pro/scss/solid";
+@import "~@fortawesome/fontawesome-pro/scss/fontawesome";
 @import "tailwindcss";
-
-.video-wrapper {
-    margin: 0 !important;
-    overflow: hidden;
-    width: 100%;
-    background: black !important;
-}
-
-.inside-wrapper {
-    padding-top: 0rem !important;
-    margin-top: 0rem !important;
-    overflow: hidden;
-}
-
-
-.video-wrapper {
-    height: 100vh;
-    width: 100vw;
-}
-
-// .remote-video {
-//     width: 100%;
-//     height: 100%;
-// }
-
-.remote-videos video {
-    // max-width: 500px;
-}
-
-.screen-active {
-    position: absolute !important;
-    bottom: 0.5rem !important;
-    right: 240px !important;
-    height: 150px !important;
-}
-
-.screen-active video {
-    width: 200px !important;
-    height: 150px !important;
-    border-radius: 0.25rem;
-}
-
-.remote-video video {}
-
-.local-video video {
-    transform: rotateY(180deg);
-    -webkit-transform: rotateY(180deg);
-    /* Safari and Chrome */
-    -moz-transform: rotateY(180deg);
-    /* Firefox */
-}
-
-.screen-video {
-    width: auto;
-    max-width: 100% !important;
-}
-
-.local-video-container {
-    position: absolute;
-    bottom: 0.5rem;
-    right: 1rem;
-    width: auto;
-}
-
-.control-area {
-    position: absolute;
-    bottom: 1rem;
-    width: 100%;
-    z-index: 99999 !important;
-}
-
-.streaming-control-area {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    width: auto;
-    z-index: 9999;
-}
-
 .btn-circle {
     width: 45px;
     height: 45px;
@@ -87,11 +16,10 @@
     border-radius: 50%;
 }
 
-.btn-circle i {
-    position: relative;
-    top: -1px;
-}
-
+// .btn-circle i {
+//     position: relative;
+//     top: -1px;
+// }
 .btn-circle-sm {
     width: 35px;
     height: 35px;
@@ -107,10 +35,10 @@
 }
 
 .btn-circle-xl {
-    width: 70px;
-    height: 70px;
-    line-height: 70px;
-    font-size: 1.3rem;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    font-size: 2rem;
 }
 
 .screen-preview-window {
@@ -128,6 +56,7 @@
 .stream-preview-window:hover {
     width: 500px !important;
 }
+
 
 /* Live indicator */
 
@@ -158,7 +87,6 @@
         height: 0;
         opacity: 1;
     }
-
     100% {
         top: 0px;
         left: 0px;
