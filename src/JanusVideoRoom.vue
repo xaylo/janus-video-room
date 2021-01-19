@@ -310,7 +310,8 @@ import { screenMixin } from "./mixins/screen";
 import { settingsMixin } from "./mixins/settings";
 
 import ElectronScreenSelector from "./electron/ScreenSelector";
-const axios = require("axios");
+import axios from "axios";
+
 export default {
   props: {
     roomData: {
