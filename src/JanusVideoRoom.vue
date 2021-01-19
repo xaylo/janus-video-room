@@ -203,7 +203,7 @@
         <!-- End camera -->
 
         <button
-          class="btn-circle btn-circle-xl mr-2 bg-green-600 hover:bg-green-700 text-white font-bold text-center"
+          class="sm:hidden btn-circle btn-circle-xl mr-2 bg-green-600 hover:bg-green-700 text-white font-bold text-center"
           v-if="!localScreenShare && !screenShare"
           :disabled="screenShare || screenButtonBusy"
           @click="enableScreenShare"
@@ -214,7 +214,7 @@
           <i class="fad fa-desktop"></i>
         </button>
         <button
-          class="btn-circle btn-circle-xl mr-2 bg-red-600 hover:bg-red-700 text-white font-bold text-center"
+          class="sm:hidden btn-circle btn-circle-xl mr-2 bg-red-600 hover:bg-red-700 text-white font-bold text-center"
           v-if="localScreenShare"
           :disabled="screenButtonBusy"
           @click="endScreenShare"
