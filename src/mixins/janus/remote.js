@@ -204,7 +204,7 @@ export const janusRemoteMixin = {
 
                             holdingVideoEl.ref = 'remoteHoldingVideo' + remoteFeed.rfindex;
                             holdingVideoEl.id = 'remoteHoldingVideo' + remoteFeed.rfindex;
-                            holdingVideoEl.classList += "bg-gray-300 border border-white mx-2";
+                            holdingVideoEl.classList += "bg-gray-400 mx-2";
 
                             this.$refs.remoteVideosContainer.appendChild(holdingVideoEl)
 
@@ -216,7 +216,7 @@ export const janusRemoteMixin = {
 
                             actualVideoEl.ref = 'remoteVideo' + remoteFeed.rfindex;
                             actualVideoEl.id = 'remoteVideo' + remoteFeed.rfindex;
-                            actualVideoEl.classList += "hidden bg-black remote-video-el border border-green-400 rounded"
+                            actualVideoEl.classList += "hidden bg-black remote-video-el rounded max-h-full"
 
                             actualVideoEl.autoplay = true;
                             actualVideoEl.playsinline = true;

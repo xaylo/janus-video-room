@@ -35,10 +35,19 @@ $fa-font-path: '~@fortawesome/fontawesome-pro/webfonts';
 }
 
 .btn-circle-xl {
-    width: 80px;
-    height: 80px;
-    line-height: 80px;
-    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .btn-circle-xl {
+        width: 70px;
+        height: 70px;
+        line-height: 70px;
+        font-size: 1.75rem;
+    }
 }
 
 .screen-preview-window {

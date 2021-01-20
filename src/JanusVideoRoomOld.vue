@@ -1,33 +1,8 @@
 <template>
-  <div class="relative bg-black h-screen w-screen overflow-hidden">
-    <div
-      v-if="!videoEnabled"
-      class="flex items-center justify-center rounded bg-white text-gray absolute local-video-position right-0 mr-2 mt-2 md:mb-2 md:mt-0 w-1/2 md:w-1/4 sm:max-h-40 md:max-h-full"
-      style="height: 150px"
-    >
-      <div class="text-center">
-        <i class="fad fa-video-slash fa-2x mb-2"></i>
-        <h5>Camera Disabled</h5>
-      </div>
-    </div>
-    <video
-      class="hidden"
-      ref="localVideoElementStream"
-      autoplay
-      playsinline
-      muted="muted"
-    />
-
-    <video
-      class="rounded bg-black absolute local-video-position right-0 mr-2 mt-2 md:mb-2 md:mt-0 w-1/2 md:w-1/4 h-auto sm:max-h-40 md:max-h-full"
-      ref="localVideoElement"
-      autoplay
-      playsinline
-      muted="muted"
-    />
+  <div class="relative bg-black vh-100 vw-100">
     <div class="streaming-control-area" v-if="room && streamEnabled">
       <button
-        class="bg-gray-100 hover:bg-gray-200 text-white font-bold text-center rounded mx-3 py-2 px-4"
+        class="bg-green-600 hover:bg-green-700 text-white font-bold text-center rounded mx-3 py-2 px-4"
         v-if="!room.streaming"
         @click="startBroadcasting"
       >
@@ -35,7 +10,7 @@
       </button>
 
       <button
-        class="bg-gray-400 hover:bg-gray-500 text-white font-bold text-center rounded mx-3 py-2 px-4"
+        class="bg-red-600 hover:bg-red-700 text-white font-bold text-center rounded mx-3 py-2 px-4"
         v-if="room.streaming && streamingLocally"
         @click="stopBroadcasting"
       >
@@ -73,7 +48,7 @@
     >
       <div class="waiting">
         <div class="text-center">
-          <h4 class="text-white text-1xl md:text-3xl">
+          <h4 class="text-white text-3xl">
             Waiting for participant to join...
           </h4>
         </div>
@@ -86,7 +61,7 @@
     >
       <div class="waiting">
         <div class="text-center">
-          <h4 class="text-white text-1xl md:text-3xl">
+          <h4 class="text-white text-3xl">
             Please allow camera and microphone permissions
           </h4>
           <p class="text-white">
@@ -119,7 +94,7 @@
 
     <!-- Remote Video - displays full screen if no screen being shared to user -->
     <div
-      class="remote-videos flex flex-wrap justify-center items-center h-5/6"
+      class="remote-videos flex flex-wrap justify-center items-center h-full md:px-8"
       ref="remoteVideosContainer"
     >
       <!-- <div v-for="s in remoteStreams" :key="s.id" :class="widthOfRemoteVideo" class="p-2">
@@ -146,7 +121,37 @@
     />
     <!-- End remote screen video -->
 
-    <div class="absolute bottom-0 w-full">
+    <!-- Local video - plays bottom right -->
+    <div ref="localVideoContainer" class="">
+      <div
+        v-if="!videoEnabled"
+        class="flex bg-white rounded text-center"
+        style="width: 200px; height: 150px"
+      >
+        <div class="m-auto">
+          <h5 class="m-auto">Camera Disabled</h5>
+        </div>
+      </div>
+      <video
+        class="hidden"
+        ref="localVideoElementStream"
+        autoplay
+        playsinline
+        muted="muted"
+      />
+    </div>
+
+    <video
+      class="rounded bg-black border border-white absolute top-0 md:bottom-0 lg:bottom-0 xl:bottom-0 right-0 mr-2 mt-2 w-1/2 md:w-1/4 h-auto"
+      ref="localVideoElement"
+      autoplay
+      playsinline
+      muted="muted"
+    />
+
+    <!-- End local video -->
+
+    <div class="absolute bottom-0 left-0 md:mb-4 mb-2 ml-2 md:ml-4">
       <div class="flex flex-wrap mb-3 ml-4">
         <!-- Mini screen - displays a small preview of the current screen share -->
         <!-- Grows on hover -->
@@ -160,11 +165,9 @@
       </div>
 
       <!-- Controls -->
-      <div
-        class="flex flex-wrap w-full justify-center md:justify-start mb-2 md:ml-2"
-      >
+      <div class="flex flex-wrap">
         <button
-          class="btn-circle btn-circle-xl mx-2 md:mr-2 bg-gray-400 hover:bg-gray-500 text-gray font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-red-600 hover:bg-red-700 text-white font-bold text-center"
           v-if="audioEnabled"
           @click="toggleMute"
           v-tooltip.top="'Your mic is currently on, click to mute'"
@@ -172,7 +175,7 @@
           <i class="fad fa-microphone"></i>
         </button>
         <button
-          class="btn-circle btn-circle-xl mx-2 md:mr-2 bg-gray-100 hover:bg-gray-200 text-gray font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-green-600 hover:bg-green-700 text-white font-bold text-center"
           v-if="!audioEnabled"
           @click="toggleMute"
           v-tooltip.top="'Your mic is currently off, click to unmute'"
@@ -182,7 +185,7 @@
 
         <!-- Camera -->
         <button
-          class="btn-circle btn-circle-xl mx-2 md:mr-2 bg-gray-400 hover:bg-gray-500 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-red-600 hover:bg-red-700 text-white font-bold text-center"
           v-if="videoEnabled"
           @click="toggleVideo"
           v-tooltip.top="'Your camera is currently on, click to turn it off'"
@@ -190,7 +193,7 @@
           <i class="fad fa-video"></i>
         </button>
         <button
-          class="btn-circle btn-circle-xl mx-2 md:mr-2 bg-gray-100 hover:bg-gray-200 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-green-600 hover:bg-green-700 text-white font-bold text-center"
           v-if="!videoEnabled"
           @click="toggleVideo"
           v-tooltip.top="'Your camera is currently off, click to turn it on'"
@@ -200,7 +203,7 @@
         <!-- End camera -->
 
         <button
-          class="hidden md:block btn-circle btn-circle-xl mx-2 md:mr-2 bg-green-600 hover:bg-green-700 text-white font-bold text-center"
+          class="sm:hidden btn-circle btn-circle-xl mr-2 bg-green-600 hover:bg-green-700 text-white font-bold text-center"
           v-if="!localScreenShare && !screenShare"
           :disabled="screenShare || screenButtonBusy"
           @click="enableScreenShare"
@@ -211,7 +214,7 @@
           <i class="fad fa-desktop"></i>
         </button>
         <button
-          class="hidden md:block btn-circle btn-circle-xl mx-2 md:mr-2 bg-red-600 hover:bg-red-700 text-white font-bold text-center"
+          class="sm:hidden btn-circle btn-circle-xl mr-2 bg-red-600 hover:bg-red-700 text-white font-bold text-center"
           v-if="localScreenShare"
           :disabled="screenButtonBusy"
           @click="endScreenShare"
@@ -223,14 +226,14 @@
         </button>
 
         <button
-          class="btn-circle btn-circle-xl mx-2 md:mr-2 bg-green-600 hover:bg-green-700 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-green-600 hover:bg-green-700 text-white font-bold text-center"
           @click="publishOwnFeed(true)"
           v-if="!published"
         >
           <i class="fad fa-play"></i>
         </button>
         <button
-          class="btn-circle btn-circle-xl mx-2 md:mr-2 bg-red-600 hover:bg-red-700 text-white font-bold text-center"
+          class="btn-circle btn-circle-xl mr-2 bg-red-600 hover:bg-red-700 text-white font-bold text-center"
           @click="unpublishOwnFeed"
           v-if="published"
           v-tooltip.top="'Leave the video chat'"
@@ -310,7 +313,6 @@ import ElectronScreenSelector from "./electron/ScreenSelector";
 import axios from "axios";
 
 export default {
-  name: "JanusVideoRoom",
   props: {
     roomData: {
       type: Object,
@@ -388,14 +390,11 @@ export default {
 </script>
 
 <style lang="scss">
-.local-video-position {
-  top: auto;
-}
-
-@media (min-width: 768px) {
-  .local-video-position {
-    bottom: 0;
-  }
+.video-wrapper {
+  margin: 0 !important;
+  overflow: hidden;
+  width: 100%;
+  background: black !important;
 }
 
 .inside-wrapper {

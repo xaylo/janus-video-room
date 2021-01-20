@@ -1,7 +1,7 @@
 {
     "private": false,
     "name": "@jaythegeek/janus-video-room",
-    "version": "1.0.22",
+    "version": "1.1.0",
     "description": "A vue component for connecting to Janus",
     "main": "dist/index.js",
     "scripts": {
@@ -24,6 +24,7 @@
         "@fortawesome/fontawesome-pro": "^5.15.2",
         "cross-env": "^7.0.2",
         "laravel-mix": "^5.0.7",
+        "tailwindcss": "^2.0.2",
         "webrtc-adapter": "^7.7.0"
     },
     "devDependencies": {
@@ -31,7 +32,6 @@
         "resolve-url-loader": "^3.1.0",
         "sass": "^1.27.0",
         "sass-loader": "^8.0.2",
-        "tailwindcss": "^1.9.5",
         "vue-template-compiler": "^2.6.12"
     },
     "eslintConfig": {
