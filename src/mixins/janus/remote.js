@@ -216,7 +216,7 @@ export const janusRemoteMixin = {
 
                             actualVideoEl.ref = 'remoteVideo' + remoteFeed.rfindex;
                             actualVideoEl.id = 'remoteVideo' + remoteFeed.rfindex;
-                            actualVideoEl.classList += "hidden bg-black remote-video-el rounded max-h-full"
+                            actualVideoEl.classList += "hidden bg-black remote-video-el rounded max-h-screen"
 
                             actualVideoEl.autoplay = true;
                             actualVideoEl.playsinline = true;

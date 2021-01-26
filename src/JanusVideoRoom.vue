@@ -348,19 +348,6 @@ export default {
       default: null,
     },
   },
-  computed: {
-    widthOfRemoteVideo() {
-      if (this.remoteStreams === 1) {
-        return "w-full";
-      } else if (this.remoteStreams === 2) {
-        return "w-1/2";
-      } else if (this.remoteStreams === 3) {
-        return "w-1/3";
-      } else {
-        return "w-full";
-      }
-    },
-  },
   data() {
     return {};
   },
@@ -392,7 +379,7 @@ export default {
   top: auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .local-video-position {
     bottom: 0;
   }
