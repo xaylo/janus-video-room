@@ -2,7 +2,7 @@
   <div class="relative bg-black h-screen w-screen overflow-hidden">
     <div
       v-if="!videoEnabled"
-      class="flex items-center justify-center rounded bg-white text-gray absolute local-video-position right-0 mr-2 mt-2 md:mb-2 md:mt-0 w-1/2 md:w-1/4 sm:max-h-40 md:max-h-full"
+      class="flex items-center justify-center rounded bg-white text-gray absolute bottom-2 right-0 mr-2 mt-2 mb-2 md:mt-0 w-1/4 hover:w-1/4 md:w-1/6 sm:max-h-40 md:max-h-full"
       style="height: 150px"
     >
       <div class="text-center">
@@ -19,7 +19,7 @@
     />
 
     <video
-      class="rounded bg-black absolute local-video-position right-0 mr-2 mt-2 md:mb-2 md:mt-0 w-1/2 md:w-1/4 h-auto sm:max-h-40 md:max-h-full"
+      class="rounded bg-black absolute bottom-2 right-0 mr-2 mt-2 md:mb-2 md:mt-0 w-1/4 hover:w-1/4 md:w-1/6 h-auto sm:max-h-40 md:max-h-full"
       ref="localVideoElement"
       autoplay
       playsinline
@@ -119,7 +119,7 @@
 
     <!-- Remote Video - displays full screen if no screen being shared to user -->
     <div
-      class="remote-videos flex flex-wrap justify-center items-center h-5/6"
+      class="remote-videos flex flex-wrap justify-center items-center"
       ref="remoteVideosContainer"
     >
       <!-- <div v-for="s in remoteStreams" :key="s.id" :class="widthOfRemoteVideo" class="p-2">
@@ -160,9 +160,7 @@
       </div>
 
       <!-- Controls -->
-      <div
-        class="flex flex-wrap w-full justify-center md:justify-start mb-2 md:ml-2"
-      >
+      <div class="flex flex-wrap w-full justify-start mb-2 md:ml-2">
         <button
           class="btn-circle btn-circle-xl mx-2 md:mr-2 bg-gray-400 hover:bg-gray-500 text-gray font-bold text-center"
           v-if="audioEnabled"
@@ -408,14 +406,6 @@ export default {
 //     height: 100%;
 //     overflow: hidden;
 // }
-.remote-videos video {
-  /* Make video to at least 100% wide and tall */
-  min-width: 100%;
-  min-height: 100%;
-  /* Setting width & height to auto prevents the browser from stretching or squishing the video */
-  width: auto;
-  height: auto;
-}
 
 // .remote-videos video {
 //     width: 100% !important;
@@ -425,7 +415,7 @@ export default {
   position: absolute !important;
   bottom: 0.5rem !important;
   right: 240px !important;
-  height: 150px !important;
+  height: auto;
 }
 
 .screen-active video {
