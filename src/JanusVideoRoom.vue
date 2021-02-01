@@ -119,7 +119,7 @@
 
     <!-- Remote Video - displays full screen if no screen being shared to user -->
     <div
-      class="remote-videos flex flex-wrap justify-center items-center"
+      class="remote-videos flex flex-wrap justify-center items-center h-screen"
       ref="remoteVideosContainer"
     >
       <!-- <div v-for="s in remoteStreams" :key="s.id" :class="widthOfRemoteVideo" class="p-2">
