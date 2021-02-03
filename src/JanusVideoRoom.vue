@@ -1,8 +1,8 @@
 <template>
-  <div class="relative bg-black h-screen w-screen overflow-hidden">
+  <div class="relative bg-black h-screen flex-col w-screen overflow-hidden">
     <div
       v-if="showPermissionsPrompt"
-      class="permissions-prompt absolute top-2 left-2 rounded bg-gray-200 p-4"
+      class="permissions-prompt absolute top-2 left-2 rounded bg-gray-200 p-2"
     >
       <h1 class="text-gray text-2xl font-bold">
         You need to enable permissions for mic & camera
@@ -11,14 +11,14 @@
 
     <div
       v-if="this.remoteFeedCount == 0"
-      class="permissions-prompt absolute top-2 right-2 rounded bg-gray-200 p-4"
+      class="permissions-prompt absolute top-2 right-2 rounded bg-gray-200 p-2"
     >
       <h1 class="text-gray text-2xl font-bold">
         Waiting for participant to join
       </h1>
     </div>
     <div
-      class="full-screen-video flex flex-wrap justify-center items-center h-screen bg-black"
+      class="full-screen-video flex flex-wrap justify-center items-center h-5/6 bg-black"
     >
       <video
         ref="remoteScreenVideoElement"
@@ -30,14 +30,14 @@
 
       <div
         ref="remoteVideosFull"
-        class="remote-videos-full grid gap-4"
+        class="remote-videos-full h-full grid gap-4"
         :class="'grid-cols-' + remoteGridColumns"
       ></div>
     </div>
     <div
-      class="video-gallery absolute w-full bottom-0 h-1/6 flex flex-wrap items-center"
+      class="video-gallery absolute w-full bottom-0 h-1/6 flex flex-wrap items-center bg-gray-400 border-top-2 border-gray-200"
     >
-      <div class="control-buttons ml-2 mr-auto items-center">
+      <div class="control-buttons ml-2 mr-auto items-end">
         <control-area
           :connected="connected"
           :audio-muted="audioMuted"
@@ -56,15 +56,23 @@
         id="remote-videos-container"
         class="remote-videos h-28 flex flex-wrap ml-auto"
       ></div>
-      <div id="local-video-container" class="local-video h-28 bg-black mr-2">
+      <div
+        id="local-video-container"
+        class="local-video rounded h-28 mr-2"
+      >
         <video
           ref="localVideoElement"
-          class="local-video rounded hidden h-full w-auto"
+          class="local-video rounded hidden h-full w-24 md:w-auto"
           autoplay
           playsinline
           muted
         ></video>
-        <div id="no-local-camera" class="w-36 h-full bg-white">No camera</div>
+        <div
+          id="no-local-camera"
+          class="w-24 md:w-36 h-full bg-gray-200 flex justify-center items-center"
+        >
+          <p>No camera</p>
+        </div>
       </div>
     </div>
   </div>
@@ -742,7 +750,7 @@ export default {
               "remote-video-player"
             );
             allRemoteVideos.forEach((v) => {
-              v.classList.remove("h-screen");
+              v.classList.remove("h-full");
               v.classList.add("h-28");
             });
             // Move all
@@ -765,13 +773,15 @@ export default {
             );
             if (!remoteVideoExists) {
               var divAppend = document.createElement("div");
-              divAppend.classList += "bg-black flex justify-center";
+              divAppend.classList +=
+                "bg-black flex h-full max-h-full justify-center";
               divAppend.id = "remote-video-div-" + remoteFeed.rfindex;
 
               var actualVideoEl = document.createElement("video");
               actualVideoEl.ref = "remote-video-" + remoteFeed.rfindex;
               actualVideoEl.id = "remote-video-" + remoteFeed.rfindex;
-              actualVideoEl.classList += "remote-video-player h-screen w-auto";
+              actualVideoEl.classList +=
+                "remote-video-player max-h-screen h-full w-auto";
               actualVideoEl.autoplay = true;
               actualVideoEl.playsinline = true;
 
@@ -952,7 +962,7 @@ export default {
 .screen-sharing-active {
   position: absolute;
   bottom: 0.75rem;
-  right: 10rem;
+  right: 11rem;
   width: auto;
   max-height: 10rem;
   z-index: 10;

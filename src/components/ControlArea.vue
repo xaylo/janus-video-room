@@ -2,7 +2,7 @@
   <!-- Controls -->
   <div class="flex flex-wrap w-full justify-start">
     <button
-      class="btn-circle btn-circle-xl mx-2 md:mr-2 bg-gray-400 hover:bg-gray-500 text-gray font-bold text-center"
+      class="btn-circle btn-circle-xl mx-2 md:mr-2 bg-gray-600 hover:bg-gray-800 text-white font-bold text-center"
       v-if="!audioMuted"
       @click="toggleAudioMute"
       v-tooltip.top="'Your mic is currently on, click to mute'"
@@ -20,7 +20,7 @@
 
     <!-- Camera -->
     <button
-      class="btn-circle btn-circle-xl mx-2 md:mr-2 bg-gray-400 hover:bg-gray-500 text-gray font-bold text-center"
+      class="btn-circle btn-circle-xl mx-2 md:mr-2 bg-gray-600 hover:bg-gray-800 text-white font-bold text-center"
       v-if="!videoMuted"
       @click="toggleVideoMute"
       v-tooltip.top="'Your camera is currently on, click to turn it off'"
