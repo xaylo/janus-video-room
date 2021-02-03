@@ -1,15 +1,24 @@
 <template>
   <div class="relative bg-black h-screen w-screen overflow-hidden">
     <div
-      class="permissions-prompt absolute top-0 left-0 bg-yellow-400 p-4"
       v-if="showPermissionsPrompt"
+      class="permissions-prompt absolute top-2 left-2 rounded bg-gray-200 p-4"
     >
-      <h1 class="text-white text-2xl font-bold">
+      <h1 class="text-gray text-2xl font-bold">
         You need to enable permissions for mic & camera
       </h1>
     </div>
+
     <div
-      class="full-screen-video flex flex-wrap justify-center items-center h-screen bg-blue-400"
+      v-if="this.remoteFeedCount == 0"
+      class="permissions-prompt absolute top-2 right-2 rounded bg-gray-200 p-4"
+    >
+      <h1 class="text-gray text-2xl font-bold">
+        Waiting for participant to join
+      </h1>
+    </div>
+    <div
+      class="full-screen-video flex flex-wrap justify-center items-center h-screen bg-black"
     >
       <video
         ref="remoteScreenVideoElement"
@@ -22,11 +31,11 @@
       <div
         ref="remoteVideosFull"
         class="remote-videos-full grid gap-4"
-        :class="'grid-cols-' + remoteFeedCount"
+        :class="'grid-cols-' + remoteGridColumns"
       ></div>
     </div>
     <div
-      class="video-gallery absolute w-full bottom-0 h-1/6 flex flex-wrap bg-red-400 items-center"
+      class="video-gallery absolute w-full bottom-0 h-1/6 flex flex-wrap items-center"
     >
       <div class="control-buttons ml-2 mr-auto items-center">
         <control-area
@@ -47,18 +56,15 @@
         id="remote-videos-container"
         class="remote-videos h-28 flex flex-wrap ml-auto"
       ></div>
-      <div
-        id="local-video-container"
-        class="local-video h-28 w-40 bg-black mr-2"
-      >
+      <div id="local-video-container" class="local-video h-28 bg-black mr-2">
         <video
           ref="localVideoElement"
-          class="local-video hidden h-full w-auto"
+          class="local-video rounded hidden h-full w-auto"
           autoplay
           playsinline
           muted
         ></video>
-        <div id="no-local-camera" class="w-full h-full bg-white">No camera</div>
+        <div id="no-local-camera" class="w-36 h-full bg-white">No camera</div>
       </div>
     </div>
   </div>
@@ -135,6 +141,13 @@ export default {
     },
     roomId() {
       return parseInt(this.roomData.id);
+    },
+    remoteGridColumns() {
+      if (this.remoteFeedCount <= 3) {
+        return this.remoteFeedCount;
+      } else {
+        return 3;
+      }
     },
   },
   methods: {
@@ -723,33 +736,42 @@ export default {
             this.$refs.remoteScreenVideoElement.srcObject = stream;
             this.$refs.remoteScreenVideoElement.classList.remove("hidden");
 
+            this.$refs.remoteVideosFull.classList.add("screen-sharing-active");
+
+            var allRemoteVideos = document.getElementsByClassName(
+              "remote-video-player"
+            );
+            allRemoteVideos.forEach((v) => {
+              v.classList.remove("h-screen");
+              v.classList.add("h-28");
+            });
             // Move all
 
             // Declare a fragment:
-            var fragment = document.createDocumentFragment();
+            // var fragment = document.createDocumentFragment();
 
-            // Append desired element to the fragment:
-            fragment.appendChild(this.$refs.remoteVideosFull.innerHTML);
+            // // Append desired element to the fragment:
+            // fragment.appendChild(this.$refs.remoteVideosFull);
 
-            // Append fragment to desired element:
-            this.$refs.remoteVideosGallery.appendChild(fragment);
+            // fragment.innerHTML.forEach((element) => {
+            //   console.log(element);
+            // });
+
+            // // Append fragment to desired element:
+            // this.$refs.remoteVideosGallery.appendChild(fragment);
           } else {
-            // var remoteVideosContainer = document.getElementById(
-            //   "remote-videos-container"
-            // );
-
             var remoteVideoExists = document.getElementById(
               "remote-video-div-" + remoteFeed.rfindex
             );
             if (!remoteVideoExists) {
               var divAppend = document.createElement("div");
-              divAppend.classList += "h-screen w-auto bg-black";
+              divAppend.classList += "bg-black flex justify-center";
               divAppend.id = "remote-video-div-" + remoteFeed.rfindex;
 
               var actualVideoEl = document.createElement("video");
               actualVideoEl.ref = "remote-video-" + remoteFeed.rfindex;
               actualVideoEl.id = "remote-video-" + remoteFeed.rfindex;
-              actualVideoEl.classList += "h-screen w-auto";
+              actualVideoEl.classList += "remote-video-player h-screen w-auto";
               actualVideoEl.autoplay = true;
               actualVideoEl.playsinline = true;
 
@@ -886,6 +908,18 @@ export default {
           }
 
           if (remoteFeed.rfdisplay.includes("***SCREEN***")) {
+            // var fragment = document.createDocumentFragment();
+
+            // // Append desired element to the fragment:
+            // fragment.appendChild(this.$refs.remoteVideosGallery.innerHTML);
+
+            // // Append fragment to desired element:
+            // this.$refs.remoteVideosFull.appendChild(fragment);
+
+            this.$refs.remoteVideosFull.classList.remove(
+              "screen-sharing-active"
+            );
+
             this.$refs.remoteScreenVideoElement.classList.add("hidden");
           }
 
@@ -915,4 +949,12 @@ export default {
 </script>
 
 <style lang="scss">
+.screen-sharing-active {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 10rem;
+  width: auto;
+  max-height: 10rem;
+  z-index: 10;
+}
 </style>
