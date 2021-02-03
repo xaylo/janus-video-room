@@ -1,22 +1,19 @@
 <template>
   <div class="relative bg-black h-screen flex-col w-screen overflow-hidden">
-    <div
-      v-if="showPermissionsPrompt"
-      class="permissions-prompt absolute top-2 left-2 rounded bg-gray-200 p-2"
-    >
-      <h1 class="text-gray text-2xl font-bold">
-        You need to enable permissions for mic & camera
-      </h1>
+    <div class="absolute top-2 mx-2 w-full">
+      <div v-if="showPermissionsPrompt" class="permissions-prompt mb-2 flex w-full">
+        <p class="rounded bg-gray-200 p-2 text-gray md:text-2xl font-bold inline">
+          Please enable permissions for mic & camera
+        </p>
+      </div>
+
+      <div v-if="this.remoteFeedCount == 0" class="permissions-prompt flex w-full">
+        <p class="rounded bg-gray-200 p-2 text-gray md:text-2xl font-bold inline">
+          Waiting for participant to join
+        </p>
+      </div>
     </div>
 
-    <div
-      v-if="this.remoteFeedCount == 0"
-      class="permissions-prompt absolute top-2 right-2 rounded bg-gray-200 p-2"
-    >
-      <h1 class="text-gray text-2xl font-bold">
-        Waiting for participant to join
-      </h1>
-    </div>
     <div
       class="full-screen-video flex flex-wrap justify-center items-center h-5/6 bg-black"
     >
@@ -56,10 +53,7 @@
         id="remote-videos-container"
         class="remote-videos h-28 flex flex-wrap ml-auto"
       ></div>
-      <div
-        id="local-video-container"
-        class="local-video rounded h-28 mr-2"
-      >
+      <div id="local-video-container" class="local-video rounded h-28 mr-2">
         <video
           ref="localVideoElement"
           class="local-video rounded hidden h-full w-24 md:w-auto"
