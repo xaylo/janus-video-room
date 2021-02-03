@@ -5,12 +5,26 @@
       v-if="showPermissionsPrompt"
     >
       <h1 class="text-white text-2xl font-bold">
-        You need to enable permissions
+        You need to enable permissions for mic & camera
       </h1>
     </div>
     <div
       class="full-screen-video flex flex-wrap justify-center items-center h-screen bg-blue-400"
-    ></div>
+    >
+      <video
+        ref="remoteScreenVideoElement"
+        class="remote-screen-video hidden h-full w-auto"
+        autoplay
+        playsinline
+        muted
+      ></video>
+
+      <div
+        ref="remoteVideosFull"
+        class="remote-videos-full grid gap-4"
+        :class="'grid-cols-' + remoteFeedCount"
+      ></div>
+    </div>
     <div
       class="video-gallery absolute w-full bottom-0 h-1/6 flex flex-wrap bg-red-400 items-center"
     >
@@ -29,6 +43,7 @@
         ></control-area>
       </div>
       <div
+        ref="remoteVideosGallery"
         id="remote-videos-container"
         class="remote-videos h-28 flex flex-wrap ml-auto"
       ></div>
@@ -36,6 +51,13 @@
         id="local-video-container"
         class="local-video h-28 w-40 bg-black mr-2"
       >
+        <video
+          ref="localVideoElement"
+          class="local-video hidden h-full w-auto"
+          autoplay
+          playsinline
+          muted
+        ></video>
         <div id="no-local-camera" class="w-full h-full bg-white">No camera</div>
       </div>
     </div>
@@ -93,14 +115,15 @@ export default {
       myid: null,
       mypvtid: null,
       mystream: null,
-      remoteFeed: null,
       feeds: [],
+      remoteFeedCount: 0,
 
       //
       audioMuted: false,
       videoMuted: false,
       localScreenShare: false,
       sharingScreen: false,
+      screenShare: false,
     };
   },
   computed: {
@@ -383,21 +406,6 @@ export default {
           // If the local video doesnt exist
           // add it here
 
-          var localVideoContainer = document.getElementById(
-            "local-video-container"
-          );
-
-          var localVideoElement = document.createElement("video");
-
-          localVideoElement.ref = "local-video-player";
-          localVideoElement.id = "local-video-player";
-          localVideoElement.classList += "w-full h-full";
-          localVideoElement.playsInline = true;
-          localVideoElement.autoplay = true;
-          localStorage.muted = true;
-
-          localVideoContainer.appendChild(localVideoElement);
-
           // Insert video into the container
 
           // if ($("#myvideo").length === 0) {
@@ -416,8 +424,7 @@ export default {
           //   $("#unpublish").click(this.unpublishOwnFeed);
           // }
           // $("#publisher").removeClass("hide").html(myusername).show();
-          Janus.attachMediaStream(localVideoElement, stream);
-          localVideoElement.muted = "muted";
+          Janus.attachMediaStream(this.$refs.localVideoElement, stream);
           if (
             this.sfutest.webrtcStuff.pc.iceConnectionState !== "completed" &&
             this.sfutest.webrtcStuff.pc.iceConnectionState !== "connected"
@@ -445,6 +452,7 @@ export default {
           } else {
             // Hide no camera image
             // display local video
+            this.$refs.localVideoElement.classList.remove("hidden");
             noLocalCameraImage.classList.add("hidden");
           }
 
@@ -706,32 +714,54 @@ export default {
 
           //
 
-          var remoteVideosContainer = document.getElementById(
-            "remote-videos-container"
-          );
+          if (remoteFeed.rfdisplay.includes("***SCREEN***")) {
+            // The incoing feed is a screen
+            this.screenShare = true;
 
-          var remoteVideoExists = document.getElementById(
-            "remote-video-div-" + remoteFeed.rfindex
-          );
-          if (!remoteVideoExists) {
-            var divAppend = document.createElement("div");
-            divAppend.classList += "ml-auto h-28 w-auto bg-black mr-4";
-            divAppend.id = "remote-video-div-" + remoteFeed.rfindex;
+            // this.$refs.remoteVideosContainer.classList.add("screen-active");
 
-            var actualVideoEl = document.createElement("video");
-            actualVideoEl.ref = "remote-video-" + remoteFeed.rfindex;
-            actualVideoEl.id = "remote-video-" + remoteFeed.rfindex;
-            actualVideoEl.classList += "h-full w-auto";
-            actualVideoEl.autoplay = true;
-            actualVideoEl.playsinline = true;
+            this.$refs.remoteScreenVideoElement.srcObject = stream;
+            this.$refs.remoteScreenVideoElement.classList.remove("hidden");
 
-            divAppend.appendChild(actualVideoEl);
+            // Move all
 
-            remoteVideosContainer.appendChild(divAppend);
+            // Declare a fragment:
+            var fragment = document.createDocumentFragment();
+
+            // Append desired element to the fragment:
+            fragment.appendChild(this.$refs.remoteVideosFull.innerHTML);
+
+            // Append fragment to desired element:
+            this.$refs.remoteVideosGallery.appendChild(fragment);
           } else {
-            var actualVideoEl = document.getElementById(
-              "remote-video-" + remoteFeed.rfindex
+            // var remoteVideosContainer = document.getElementById(
+            //   "remote-videos-container"
+            // );
+
+            var remoteVideoExists = document.getElementById(
+              "remote-video-div-" + remoteFeed.rfindex
             );
+            if (!remoteVideoExists) {
+              var divAppend = document.createElement("div");
+              divAppend.classList += "h-screen w-auto bg-black";
+              divAppend.id = "remote-video-div-" + remoteFeed.rfindex;
+
+              var actualVideoEl = document.createElement("video");
+              actualVideoEl.ref = "remote-video-" + remoteFeed.rfindex;
+              actualVideoEl.id = "remote-video-" + remoteFeed.rfindex;
+              actualVideoEl.classList += "h-screen w-auto";
+              actualVideoEl.autoplay = true;
+              actualVideoEl.playsinline = true;
+
+              divAppend.appendChild(actualVideoEl);
+
+              this.$refs.remoteVideosFull.appendChild(divAppend);
+              this.remoteFeedCount++;
+            } else {
+              var actualVideoEl = document.getElementById(
+                "remote-video-" + remoteFeed.rfindex
+              );
+            }
           }
 
           //
@@ -852,6 +882,11 @@ export default {
           );
           if (remoteVideoDiv) {
             remoteVideoDiv.remove();
+            this.remoteFeedCount--;
+          }
+
+          if (remoteFeed.rfdisplay.includes("***SCREEN***")) {
+            this.$refs.remoteScreenVideoElement.classList.add("hidden");
           }
 
           // $("#remotevideo" + remoteFeed.rfindex).remove();
