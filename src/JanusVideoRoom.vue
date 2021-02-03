@@ -1,14 +1,24 @@
 <template>
   <div class="relative bg-black h-screen flex-col w-screen overflow-hidden">
     <div class="absolute top-2 mx-2 w-full">
-      <div v-if="showPermissionsPrompt" class="permissions-prompt mb-2 flex w-full">
-        <p class="rounded bg-gray-200 p-2 text-gray md:text-2xl font-bold inline">
+      <div
+        v-if="showPermissionsPrompt"
+        class="permissions-prompt mb-2 flex w-full"
+      >
+        <p
+          class="rounded bg-gray-200 p-2 text-gray md:text-2xl font-bold inline"
+        >
           Please enable permissions for mic & camera
         </p>
       </div>
 
-      <div v-if="this.remoteFeedCount == 0" class="permissions-prompt flex w-full">
-        <p class="rounded bg-gray-200 p-2 text-gray md:text-2xl font-bold inline">
+      <div
+        v-if="this.remoteFeedCount == 0"
+        class="permissions-prompt flex w-full"
+      >
+        <p
+          class="rounded bg-gray-200 p-2 text-gray md:text-2xl font-bold inline"
+        >
           Waiting for participant to join
         </p>
       </div>
@@ -154,7 +164,15 @@ export default {
   },
   methods: {
     toggleAudioMute() {
-      // do something
+      var muted = this.sfutest.isAudioMuted();
+      Janus.log((muted ? "Unmuting" : "Muting") + " local stream...");
+      if (muted) {
+        this.sfutest.unmuteAudio();
+      } else {
+        this.sfutest.muteAudio();
+      }
+      muted = this.sfutest.isAudioMuted();
+      this.audioMuted = muted;
     },
     toggleVideoMute() {
       // do something
