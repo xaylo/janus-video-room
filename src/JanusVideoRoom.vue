@@ -23,9 +23,15 @@
         </p>
       </div>
 
-      <div>
-        <div ref="miniScreen" class="hidden"></div>
-      </div>
+      <video
+        ref="miniScreen"
+        class="hidden bg-yellow-200"
+        autoplay
+        playsinline
+        muted
+        width="300px"
+        height="300px"
+      ></video>
     </div>
 
     <div
@@ -131,6 +137,7 @@ export default {
       default: null,
     },
   },
+  mixins: [screenSharingMixin],
   data() {
     return {
       subscriberMode: false,
@@ -159,6 +166,9 @@ export default {
       screenButtonBusy: false,
       localScreenStream: null,
       screenConnection: null,
+      screenCaptureSettings: {
+        cursor: "never", // always, motion, never
+      },
     };
   },
   computed: {
@@ -989,20 +999,21 @@ export default {
       });
     },
     endScreenShare() {
-      this.localScreenStream.getTracks().forEach((track) => track.stop());
       this.screenButtonBusy = true;
       var unpublish = {
         request: "unpublish",
       };
-      this.sfutest.send({
+      this.screenPluginHandle.send({
         message: unpublish,
         success: () => {
           this.localScreenShare = false;
           this.screenButtonBusy = false;
 
+          this.localScreenStream.getTracks().forEach((track) => track.stop());
+
           this.localScreenStream = null;
-          this.$refs.miniScreen.srcObject = null;
-          this.$refs.miniScreen.classList.add("hidden");
+          this.miniScreen.srcObject = null;
+          this.miniScreen.classList.add("hidden");
           this.screenShare = null;
           this.screenVideoElement = null;
         },
@@ -1026,17 +1037,36 @@ export default {
     },
 
     async startScreenShare() {
-      var displayMediaOptions = {
-        video: {
-          cursor: "always",
-        },
-        audio: false,
-      };
+      if (this.isElectron) {
+        this.enableScreenShareElectron();
+      } else {
+        var displayMediaOptions = {
+          video: {
+            cursor: this.screenCaptureSettings.cursor,
+          },
+          audio: false,
+        };
 
-      var stream = await navigator.mediaDevices.getDisplayMedia(
-        displayMediaOptions
-      );
-      this.selectScreenSource(stream);
+        var stream = await navigator.mediaDevices.getDisplayMedia(
+          displayMediaOptions
+        );
+        this.selectScreenSource(stream);
+      }
+    },
+
+    enableScreenShareElectron() {
+      console.log("helloenableScreenShareElectron");
+      this.desktopCapturer
+        .getSources({
+          types: ["window", "screen"],
+          thumbnailSize: {
+            width: 1280,
+            height: 720,
+          },
+        })
+        .then(async (sources) => {
+          this.screenSources = sources;
+        });
     },
 
     async selectScreenSource(stream) {
@@ -1044,6 +1074,30 @@ export default {
       this.localScreenShare = true;
       this.publishScreen(stream);
       this.screenSources = [];
+    },
+
+    async selectScreenSourceElectron(source) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: {
+            mandatory: {
+              chromeMediaSource: "desktop",
+              chromeMediaSourceId: source.id,
+              // minWidth: 1280,
+              // maxWidth: 1280,
+              // minHeight: 720,
+              // maxHeight: 720,
+            },
+          },
+        });
+        this.screenShare = true;
+        this.localScreenShare = true;
+        this.publishScreen(stream);
+        this.screenSources = [];
+      } catch (e) {
+        console.log(e);
+      }
     },
 
     listenForScreenShareEnd(stream) {
@@ -1058,9 +1112,9 @@ export default {
 
       this.janusConnection.attach({
         plugin: "janus.plugin.videoroom",
-        opaqueId: this.screenShareId,
+        opaqueId: this.screenOpaqueId,
         success: (pluginHandle) => {
-          this.screenConnection = pluginHandle;
+          this.screenPluginHandle = pluginHandle;
           var subscribe = {
             request: "join",
             room: this.roomId,
@@ -1070,7 +1124,7 @@ export default {
             quality: 0,
           };
 
-          this.screenConnection.send({
+          this.screenPluginHandle.send({
             message: subscribe,
           });
         },
@@ -1090,10 +1144,10 @@ export default {
                 "Successfully joined room " +
                   msg["room"] +
                   " with ID " +
-                  this.myScreenId
+                  this.myscreenid
               );
               if (this.role === "publisher") {
-                this.screenConnection.createOffer({
+                this.screenPluginHandle.createOffer({
                   stream: stream,
                   media: {
                     video: true,
@@ -1107,7 +1161,7 @@ export default {
                       audio: true,
                       video: true,
                     };
-                    this.screenConnection.send({
+                    this.screenPluginHandle.send({
                       message: publish,
                       jsep: jsep,
                     });
@@ -1122,7 +1176,7 @@ export default {
           }
           if (jsep) {
             Janus.debug("Handling SDP as well...", jsep);
-            this.screenConnection.handleRemoteJsep({
+            this.screenPluginHandle.handleRemoteJsep({
               jsep: jsep,
             });
           }
@@ -1130,16 +1184,18 @@ export default {
         onlocalstream: (stream) => {
           Janus.debug(" ::: Got a local screen stream :::", stream);
           this.localScreenStream = stream;
-          this.$refs.miniScreen.srcObject = stream;
-          this.$refs.miniScreen.classList.remove("hidden");
+          this.miniScreen.srcObject = stream;
+          this.miniScreen.classList.remove("hidden");
 
           this.screenVideoElement = document.createElement("video");
           this.screenVideoElement.srcObject = stream;
           this.screenVideoElement.autoplay = true;
 
           if (
-            this.sfutest.webrtcStuff.pc.iceConnectionState !== "completed" &&
-            this.sfutest.webrtcStuff.pc.iceConnectionState !== "connected"
+            this.xayloConnection.webrtcStuff.pc.iceConnectionState !==
+              "completed" &&
+            this.xayloConnection.webrtcStuff.pc.iceConnectionState !==
+              "connected"
           ) {
             console.log("connecting local video");
             // show a spinner or something
@@ -1159,7 +1215,7 @@ export default {
           // );
 
           if (on) {
-            this.screenConnection.send({
+            this.screenPluginHandle.send({
               message: {
                 request: "configure",
                 bitrate: 0,
