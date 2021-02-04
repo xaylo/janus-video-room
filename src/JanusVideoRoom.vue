@@ -1,5 +1,5 @@
 <template>
-  <div class="relative bg-black h-screen flex-col w-screen overflow-hidden some">
+  <div class="relative bg-black h-screen flex-col w-screen overflow-hidden">
     <div class="absolute top-2 mx-2 w-full">
       <div
         v-if="showPermissionsPrompt"
@@ -52,7 +52,7 @@
       ></div>
     </div>
     <div
-      class="video-gallery absolute w-full bottom-0 h-1/6 flex flex-wrap items-center bg-gray-400 border-top-2 border-gray-200 opacity-75"
+      class="video-gallery absolute w-full bottom-0 h-1/6 flex flex-wrap items-center bg-gray-400 border-top-2 border-gray-200 bg-opacity-75"
     >
       <div class="control-buttons ml-2 mr-auto items-end">
         <control-area
