@@ -1190,4 +1190,12 @@ export default {
   max-height: 10rem;
   z-index: 10;
 }
+
+video.local-video {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  /* Safari and Chrome */
+  -moz-transform: rotateY(180deg);
+  /* Firefox */
+}
 </style>
