@@ -21,7 +21,7 @@
     <!-- Camera -->
     <button
       class="btn-circle btn-circle-xl mx-2 md:mr-2 bg-gray-600 hover:bg-gray-800 text-white font-bold text-center"
-      v-if="!videoMuted"
+      v-if="!videoEnabled"
       @click="toggleVideoMute"
       v-tooltip.top="'Your camera is currently on, click to turn it off'"
     >
@@ -29,7 +29,7 @@
     </button>
     <button
       class="btn-circle btn-circle-xl mx-2 md:mr-2 bg-gray-100 hover:bg-gray-200 text-gray font-bold text-center"
-      v-if="videoMuted"
+      v-if="videoEnabled"
       @click="toggleVideoMute"
       v-tooltip.top="'Your camera is currently off, click to turn it on'"
     >
@@ -81,16 +81,13 @@
 export default {
   props: [
     "audioMuted",
-    "videoMuted",
+    "videoEnabled",
     "localScreenShare",
     "sharingScreen",
     "connected",
+    "screenButtonBusy",
   ],
-  data() {
-    return {
-      screenButtonBusy: false,
-    };
-  },
+
   methods: {
     toggleAudioMute() {
       this.$emit("toggleAudioMute");
