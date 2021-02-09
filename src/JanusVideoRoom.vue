@@ -25,11 +25,11 @@
 
       <video
         ref="miniScreen"
-        class="hidden bg-yellow-200"
+        class="hidden bg-yellow-200 z-30 mt-4 border"
         autoplay
         playsinline
         muted
-        width="300px"
+        width="500px"
         height="300px"
       ></video>
     </div>
@@ -137,9 +137,9 @@ export default {
       default: null,
     },
   },
-  mixins: [screenSharingMixin],
   data() {
     return {
+      role: "publisher",
       subscriberMode: false,
       janusConnection: null,
       sfutest: null,
@@ -155,8 +155,11 @@ export default {
       audioMuted: false,
       videoEnabled: false,
       sharingScreen: false,
-      myscreenid: null,
+      myScreenId: null,
       myPrivateScreenId: null,
+
+      //
+
       screenVideoElement: null,
       screenShare: null,
       screenSources: [],
@@ -165,7 +168,7 @@ export default {
       selectedScreenSource: null,
       screenButtonBusy: false,
       localScreenStream: null,
-      screenConnection: null,
+      //
       screenCaptureSettings: {
         cursor: "never", // always, motion, never
       },
@@ -187,6 +190,9 @@ export default {
       } else {
         return 3;
       }
+    },
+    miniScreen() {
+      return this.$refs.miniScreen;
     },
   },
   methods: {
@@ -793,18 +799,22 @@ export default {
 
             // this.$refs.remoteVideosContainer.classList.add("screen-active");
 
-            this.$refs.remoteScreenVideoElement.srcObject = stream;
-            this.$refs.remoteScreenVideoElement.classList.remove("hidden");
+            if (!remoteFeed.rfdisplay.includes(this.userData.email)) {
+              this.$refs.remoteScreenVideoElement.srcObject = stream;
+              this.$refs.remoteScreenVideoElement.classList.remove("hidden");
 
-            this.$refs.remoteVideosFull.classList.add("screen-sharing-active");
+              this.$refs.remoteVideosFull.classList.add(
+                "screen-sharing-active"
+              );
+              var allRemoteVideos = document.getElementsByClassName(
+                "remote-video-player"
+              );
+              allRemoteVideos.forEach((v) => {
+                v.classList.remove("h-full");
+                v.classList.add("h-28");
+              });
+            }
 
-            var allRemoteVideos = document.getElementsByClassName(
-              "remote-video-player"
-            );
-            allRemoteVideos.forEach((v) => {
-              v.classList.remove("h-full");
-              v.classList.add("h-28");
-            });
             // Move all
 
             // Declare a fragment:
@@ -820,31 +830,34 @@ export default {
             // // Append fragment to desired element:
             // this.$refs.remoteVideosGallery.appendChild(fragment);
           } else {
-            var remoteVideoExists = document.getElementById(
-              "remote-video-div-" + remoteFeed.rfindex
-            );
-            if (!remoteVideoExists) {
-              var divAppend = document.createElement("div");
-              divAppend.classList +=
-                "bg-black flex h-screen max-h-screen justify-center";
-              divAppend.id = "remote-video-div-" + remoteFeed.rfindex;
-
-              var actualVideoEl = document.createElement("video");
-              actualVideoEl.ref = "remote-video-" + remoteFeed.rfindex;
-              actualVideoEl.id = "remote-video-" + remoteFeed.rfindex;
-              actualVideoEl.classList +=
-                "remote-video-player max-h-screen h-screen w-auto";
-              actualVideoEl.autoplay = true;
-              actualVideoEl.playsinline = true;
-
-              divAppend.appendChild(actualVideoEl);
-
-              this.$refs.remoteVideosFull.appendChild(divAppend);
-              this.remoteFeedCount++;
-            } else {
-              var actualVideoEl = document.getElementById(
-                "remote-video-" + remoteFeed.rfindex
+            if (!remoteFeed.rfdisplay.includes(this.userData.email)) {
+              var remoteVideoExists = document.getElementById(
+                "remote-video-div-" + remoteFeed.rfindex
               );
+              if (!remoteVideoExists) {
+                var divAppend = document.createElement("div");
+                divAppend.classList +=
+                  "bg-black flex h-screen max-h-screen justify-center";
+                divAppend.id = "remote-video-div-" + remoteFeed.rfindex;
+
+                var actualVideoEl = document.createElement("video");
+                actualVideoEl.ref = "remote-video-" + remoteFeed.rfindex;
+                actualVideoEl.id = "remote-video-" + remoteFeed.rfindex;
+                actualVideoEl.classList +=
+                  "remote-video-player max-h-screen h-screen w-auto";
+                actualVideoEl.autoplay = true;
+                actualVideoEl.playsinline = true;
+
+                divAppend.appendChild(actualVideoEl);
+
+                this.$refs.remoteVideosFull.appendChild(divAppend);
+                this.remoteFeedCount++;
+              } else {
+                var actualVideoEl = document.getElementById(
+                  "remote-video-" + remoteFeed.rfindex
+                );
+              }
+              Janus.attachMediaStream(actualVideoEl, stream);
             }
           }
 
@@ -903,8 +916,6 @@ export default {
           //     }
           //   });
           // }
-
-          Janus.attachMediaStream(actualVideoEl, stream);
 
           var videoTracks = stream.getVideoTracks();
           if (!videoTracks || videoTracks.length === 0) {
@@ -998,12 +1009,165 @@ export default {
         },
       });
     },
+
+    // Screen sharing
+
+    async startScreenShare() {
+      if (this.isElectron) {
+        this.enableScreenShareElectron();
+      } else {
+        var displayMediaOptions = {
+          video: {
+            cursor: this.screenCaptureSettings.cursor,
+          },
+          audio: false,
+        };
+
+        var stream = await navigator.mediaDevices.getDisplayMedia(
+          displayMediaOptions
+        );
+        this.selectScreenSource(stream);
+      }
+    },
+
+    async selectScreenSource(stream) {
+      this.screenShare = true;
+      this.localScreenShare = true;
+      this.publishScreen(stream);
+      this.screenSources = [];
+    },
+
+    publishScreen(stream) {
+      this.listenForScreenShareEnd(stream);
+      this.registerScreenUsername();
+
+      this.janusConnection.attach({
+        plugin: "janus.plugin.videoroom",
+        opaqueId: this.screenShareId,
+        success: (pluginHandle) => {
+          this.screenConnection = pluginHandle;
+          var subscribe = {
+            request: "join",
+            room: this.roomId,
+            ptype: "publisher",
+            private_id: this.myPrivateScreenId,
+            display: this.screenShareId,
+            quality: 0,
+          };
+
+          this.screenConnection.send({
+            message: subscribe,
+          });
+        },
+        error: (error) => {
+          Janus.error("  -- Error attaching plugin...", error);
+          console.log("Error attaching plugin... " + error);
+        },
+        onmessage: (msg, jsep) => {
+          Janus.debug(" ::: Got a message (publisher) :::", msg);
+          var event = msg["videoroom"];
+          Janus.debug("Event: " + event);
+          if (event) {
+            if (event === "joined") {
+              this.myScreenId = msg["id"];
+              this.myPrivateScreenId = msg["private_id"];
+              Janus.log(
+                "Successfully joined room " +
+                  msg["room"] +
+                  " with ID " +
+                  this.myScreenId
+              );
+              if (this.role === "publisher") {
+                this.screenConnection.createOffer({
+                  stream: stream,
+                  media: {
+                    video: true,
+                    audioSend: true,
+                    videoRecv: false,
+                  }, // Screen sharing Publishers are sendonly
+                  success: (jsep) => {
+                    Janus.debug("Got publisher SDP!", jsep);
+                    var publish = {
+                      request: "configure",
+                      audio: true,
+                      video: true,
+                    };
+                    this.screenConnection.send({
+                      message: publish,
+                      jsep: jsep,
+                    });
+                  },
+                  error: (error) => {
+                    Janus.error("WebRTC error:", error);
+                    console.log("WebRTC error... " + error.message);
+                  },
+                });
+              }
+            }
+          }
+          if (jsep) {
+            Janus.debug("Handling SDP as well...", jsep);
+            this.screenConnection.handleRemoteJsep({
+              jsep: jsep,
+            });
+          }
+        },
+        onlocalstream: (stream) => {
+          Janus.debug(" ::: Got a local screen stream :::", stream);
+          this.localScreenStream = stream;
+          this.miniScreen.srcObject = stream;
+          this.miniScreen.classList.remove("hidden");
+
+          this.screenVideoElement = document.createElement("video");
+          this.screenVideoElement.srcObject = stream;
+          this.screenVideoElement.autoplay = true;
+
+          if (
+            this.sfutest.webrtcStuff.pc.iceConnectionState !== "completed" &&
+            this.sfutest.webrtcStuff.pc.iceConnectionState !== "connected"
+          ) {
+            console.log("connecting local video");
+            // show a spinner or something
+          }
+          var videoTracks = stream.getVideoTracks();
+          if (!videoTracks || videoTracks.length === 0) {
+            // No webcam
+          }
+        },
+        webrtcState: (on) => {
+          // Janus.log(
+          //   "Xaylo Janus says this WebRTC PeerConnection (feed #" +
+          //     remoteFeed.rfindex +
+          //     ") is " +
+          //     (on ? "up" : "down") +
+          //     " now"
+          // );
+
+          if (on) {
+            this.screenConnection.send({
+              message: {
+                request: "configure",
+                bitrate: 0,
+              },
+            });
+          }
+        },
+      });
+    },
+
+    listenForScreenShareEnd(stream) {
+      stream.getVideoTracks()[0].addEventListener("ended", () => {
+        console.log("Stop button pressed in browser");
+        this.endScreenShare();
+      });
+    },
+
     endScreenShare() {
       this.screenButtonBusy = true;
       var unpublish = {
         request: "unpublish",
       };
-      this.screenPluginHandle.send({
+      this.screenConnection.send({
         message: unpublish,
         success: () => {
           this.localScreenShare = false;
@@ -1030,199 +1194,9 @@ export default {
         display: this.screenShareId,
         quality: 0,
       };
-      this.screenUserName = this.screenShareId;
+
       this.sfutest.send({
         message: register,
-      });
-    },
-
-    async startScreenShare() {
-      if (this.isElectron) {
-        this.enableScreenShareElectron();
-      } else {
-        var displayMediaOptions = {
-          video: {
-            cursor: this.screenCaptureSettings.cursor,
-          },
-          audio: false,
-        };
-
-        var stream = await navigator.mediaDevices.getDisplayMedia(
-          displayMediaOptions
-        );
-        this.selectScreenSource(stream);
-      }
-    },
-
-    enableScreenShareElectron() {
-      console.log("helloenableScreenShareElectron");
-      this.desktopCapturer
-        .getSources({
-          types: ["window", "screen"],
-          thumbnailSize: {
-            width: 1280,
-            height: 720,
-          },
-        })
-        .then(async (sources) => {
-          this.screenSources = sources;
-        });
-    },
-
-    async selectScreenSource(stream) {
-      this.screenShare = true;
-      this.localScreenShare = true;
-      this.publishScreen(stream);
-      this.screenSources = [];
-    },
-
-    async selectScreenSourceElectron(source) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: false,
-          video: {
-            mandatory: {
-              chromeMediaSource: "desktop",
-              chromeMediaSourceId: source.id,
-              // minWidth: 1280,
-              // maxWidth: 1280,
-              // minHeight: 720,
-              // maxHeight: 720,
-            },
-          },
-        });
-        this.screenShare = true;
-        this.localScreenShare = true;
-        this.publishScreen(stream);
-        this.screenSources = [];
-      } catch (e) {
-        console.log(e);
-      }
-    },
-
-    listenForScreenShareEnd(stream) {
-      stream.getVideoTracks()[0].addEventListener("ended", () => {
-        console.log("Stop button pressed in browser");
-        this.endScreenShare();
-      });
-    },
-    publishScreen(stream) {
-      this.listenForScreenShareEnd(stream);
-      this.registerScreenUsername();
-
-      this.janusConnection.attach({
-        plugin: "janus.plugin.videoroom",
-        opaqueId: this.screenOpaqueId,
-        success: (pluginHandle) => {
-          this.screenPluginHandle = pluginHandle;
-          var subscribe = {
-            request: "join",
-            room: this.roomId,
-            ptype: "publisher",
-            private_id: this.myPrivateScreenId,
-            display: this.screenShareId,
-            quality: 0,
-          };
-
-          this.screenPluginHandle.send({
-            message: subscribe,
-          });
-        },
-        error: (error) => {
-          Janus.error("  -- Error attaching plugin...", error);
-          console.log("Error attaching plugin... " + error);
-        },
-        onmessage: (msg, jsep) => {
-          Janus.debug(" ::: Got a message (publisher) :::", msg);
-          var event = msg["videoroom"];
-          Janus.debug("Event: " + event);
-          if (event) {
-            if (event === "joined") {
-              this.myscreenid = msg["id"];
-              this.myPrivateScreenId = msg["private_id"];
-              Janus.log(
-                "Successfully joined room " +
-                  msg["room"] +
-                  " with ID " +
-                  this.myscreenid
-              );
-              if (this.role === "publisher") {
-                this.screenPluginHandle.createOffer({
-                  stream: stream,
-                  media: {
-                    video: true,
-                    audioSend: true,
-                    videoRecv: false,
-                  }, // Screen sharing Publishers are sendonly
-                  success: (jsep) => {
-                    Janus.debug("Got publisher SDP!", jsep);
-                    var publish = {
-                      request: "configure",
-                      audio: true,
-                      video: true,
-                    };
-                    this.screenPluginHandle.send({
-                      message: publish,
-                      jsep: jsep,
-                    });
-                  },
-                  error: (error) => {
-                    Janus.error("WebRTC error:", error);
-                    console.log("WebRTC error... " + error.message);
-                  },
-                });
-              }
-            }
-          }
-          if (jsep) {
-            Janus.debug("Handling SDP as well...", jsep);
-            this.screenPluginHandle.handleRemoteJsep({
-              jsep: jsep,
-            });
-          }
-        },
-        onlocalstream: (stream) => {
-          Janus.debug(" ::: Got a local screen stream :::", stream);
-          this.localScreenStream = stream;
-          this.miniScreen.srcObject = stream;
-          this.miniScreen.classList.remove("hidden");
-
-          this.screenVideoElement = document.createElement("video");
-          this.screenVideoElement.srcObject = stream;
-          this.screenVideoElement.autoplay = true;
-
-          if (
-            this.xayloConnection.webrtcStuff.pc.iceConnectionState !==
-              "completed" &&
-            this.xayloConnection.webrtcStuff.pc.iceConnectionState !==
-              "connected"
-          ) {
-            console.log("connecting local video");
-            // show a spinner or something
-          }
-          var videoTracks = stream.getVideoTracks();
-          if (!videoTracks || videoTracks.length === 0) {
-            // No webcam
-          }
-        },
-        webrtcState: (on) => {
-          // Janus.log(
-          //   "Xaylo Janus says this WebRTC PeerConnection (feed #" +
-          //     remoteFeed.rfindex +
-          //     ") is " +
-          //     (on ? "up" : "down") +
-          //     " now"
-          // );
-
-          if (on) {
-            this.screenPluginHandle.send({
-              message: {
-                request: "configure",
-                bitrate: 0,
-              },
-            });
-          }
-        },
       });
     },
   },
