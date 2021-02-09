@@ -100,7 +100,6 @@ import { Janus } from "janus-gateway";
 //
 import ControlArea from "./components/ControlArea.vue";
 
-
 export default {
   name: "JanusVideoRoom",
   props: {
@@ -480,45 +479,12 @@ export default {
         onlocalstream: (stream) => {
           Janus.debug(" ::: Got a local stream :::", stream);
           this.mystream = stream;
-
-          // If the local video doesnt exist
-          // add it here
-
-          // Insert video into the container
-
-          // if ($("#myvideo").length === 0) {
-          //   $("#videolocal").append(
-          //     '<video class="rounded centered" id="myvideo" width="100%" height="100%" autoplay playsinline muted="muted"/>'
-          //   );
-          //   // Add a 'mute' button
-          //   $("#videolocal").append(
-          //     '<button class="btn btn-warning btn-xs" id="mute" style="position: absolute; bottom: 0px; left: 0px; margin: 15px;">Mute</button>'
-          //   );
-          //   $("#mute").click(this.toggleAudioMute);
-          //   // Add an 'unpublish' button
-          //   $("#videolocal").append(
-          //     '<button class="btn btn-warning btn-xs" id="unpublish" style="position: absolute; bottom: 0px; right: 0px; margin: 15px;">Unpublish</button>'
-          //   );
-          //   $("#unpublish").click(this.unpublishOwnFeed);
-          // }
-          // $("#publisher").removeClass("hide").html(myusername).show();
           Janus.attachMediaStream(this.$refs.localVideoElement, stream);
           if (
             this.sfutest.webrtcStuff.pc.iceConnectionState !== "completed" &&
             this.sfutest.webrtcStuff.pc.iceConnectionState !== "connected"
           ) {
             // Show connecting spinner or something?
-            // $("#videolocal")
-            //   .parent()
-            //   .parent()
-            //   .block({
-            //     message: "<b>Publishing...</b>",
-            //     css: {
-            //       border: "none",
-            //       backgroundColor: "transparent",
-            //       color: "white",
-            //     },
-            //   });
           }
           var noLocalCameraImage = document.getElementById("no-local-camera");
 
@@ -696,14 +662,7 @@ export default {
               }
               remoteFeed.rfid = msg["id"];
               remoteFeed.rfdisplay = msg["display"];
-              // if (!remoteFeed.spinner) {
-              //   var target = document.getElementById(
-              //     "videoremote" + remoteFeed.rfindex
-              //   );
-              //   remoteFeed.spinner = new Spinner({ top: 100 }).spin(target);
-              // } else {
-              //   remoteFeed.spinner.spin();
-              // }
+
               Janus.log(
                 "Successfully attached to feed " +
                   remoteFeed.rfid +
@@ -714,31 +673,8 @@ export default {
               );
 
               // Show the remote feed - what is the html in the rfdisplay - ah its display username!!
-
-              // $("#remote" + remoteFeed.rfindex)
-              //   .removeClass("hide")
-              //   .html(remoteFeed.rfdisplay)
-              //   .show();
             } else if (event === "event") {
               // Check if we got a simulcast-related event from this publisher
-              // var substream = msg["substream"];
-              // var temporal = msg["temporal"];
-              // if (
-              //   (substream !== null && substream !== undefined) ||
-              //   (temporal !== null && temporal !== undefined)
-              // ) {
-              //   if (!remoteFeed.simulcastStarted) {
-              //     remoteFeed.simulcastStarted = true;
-              //     // Add some new buttons
-              //     addSimulcastButtons(
-              //       remoteFeed.rfindex,
-              //       remoteFeed.videoCodec === "vp8" ||
-              //         remoteFeed.videoCodec === "h264"
-              //     );
-              //   }
-              //   // We just received notice that there's been a switch, update the buttons
-              //   updateSimulcastButtons(remoteFeed.rfindex, substream, temporal);
-              // }
             } else {
               // What has just happened?
               console.log("not sure what happened", msg, jsep);
@@ -796,8 +732,6 @@ export default {
             // The incoing feed is a screen
             this.screenShare = true;
 
-            // this.$refs.remoteVideosContainer.classList.add("screen-active");
-
             if (!remoteFeed.rfdisplay.includes(this.userData.email)) {
               this.$refs.remoteScreenVideoElement.srcObject = stream;
               this.$refs.remoteScreenVideoElement.classList.remove("hidden");
@@ -813,21 +747,6 @@ export default {
                 v.classList.add("h-28");
               });
             }
-
-            // Move all
-
-            // Declare a fragment:
-            // var fragment = document.createDocumentFragment();
-
-            // // Append desired element to the fragment:
-            // fragment.appendChild(this.$refs.remoteVideosFull);
-
-            // fragment.innerHTML.forEach((element) => {
-            //   console.log(element);
-            // });
-
-            // // Append fragment to desired element:
-            // this.$refs.remoteVideosGallery.appendChild(fragment);
           } else {
             if (!remoteFeed.rfdisplay.includes(this.userData.email)) {
               var remoteVideoExists = document.getElementById(
@@ -860,110 +779,11 @@ export default {
             }
           }
 
-          //
-
-          // var addButtons = false;
-          // if ($("#remotevideo" + remoteFeed.rfindex).length === 0) {
-          //   // addButtons = true;
-          //   // No remote video yet
-
-          //   $("#videoremote" + remoteFeed.rfindex).append(
-          //     '<video class="rounded centered" id="waitingvideo' +
-          //       remoteFeed.rfindex +
-          //       '" width="100%" height="100%" />'
-          //   );
-          //   $("#videoremote" + remoteFeed.rfindex).append(
-          //     '<video class="rounded centered relative hide" id="remotevideo' +
-          //       remoteFeed.rfindex +
-          //       '" width="100%" height="100%" autoplay playsinline/>'
-          //   );
-          //   $("#videoremote" + remoteFeed.rfindex).append(
-          //     '<span class="label label-primary hide" id="curres' +
-          //       remoteFeed.rfindex +
-          //       '" style="position: absolute; bottom: 0px; left: 0px; margin: 15px;"></span>' +
-          //       '<span class="label label-info hide" id="curbitrate' +
-          //       remoteFeed.rfindex +
-          //       '" style="position: absolute; bottom: 0px; right: 0px; margin: 15px;"></span>'
-          //   );
-          //   // Show the video, hide the spinner and show the resolution when we get a playing event
-          //   $("#remotevideo" + remoteFeed.rfindex).bind("playing", () => {
-          //     if (remoteFeed.spinner) remoteFeed.spinner.stop();
-          //     remoteFeed.spinner = null;
-          //     $("#waitingvideo" + remoteFeed.rfindex).remove();
-          //     if (this.videoWidth)
-          //       $("#remotevideo" + remoteFeed.rfindex)
-          //         .removeClass("hide")
-          //         .show();
-          //     var width = this.videoWidth;
-          //     var height = this.videoHeight;
-          //     $("#curres" + remoteFeed.rfindex)
-          //       .removeClass("hide")
-          //       .text(width + "x" + height)
-          //       .show();
-          //     if (Janus.webRTCAdapter.browserDetails.browser === "firefox") {
-          //       // Firefox Stable has a bug: width and height are not immediately available after a playing
-          //       setTimeout(() => {
-          //         var width = $("#remotevideo" + remoteFeed.rfindex).get(0)
-          //           .videoWidth;
-          //         var height = $("#remotevideo" + remoteFeed.rfindex).get(0)
-          //           .videoHeight;
-          //         $("#curres" + remoteFeed.rfindex)
-          //           .removeClass("hide")
-          //           .text(width + "x" + height)
-          //           .show();
-          //       }, 2000);
-          //     }
-          //   });
-          // }
-
           var videoTracks = stream.getVideoTracks();
           if (!videoTracks || videoTracks.length === 0) {
             // No remote video
-            // $("#remotevideo" + remoteFeed.rfindex).hide();
-            // if (
-            //   $("#videoremote" + remoteFeed.rfindex + " .no-video-container")
-            //     .length === 0
-            // ) {
-            //   $("#videoremote" + remoteFeed.rfindex).append(
-            //     '<div class="no-video-container">' +
-            //       '<i class="fa fa-video-camera fa-5 no-video-icon"></i>' +
-            //       '<span class="no-video-text">No remote video available</span>' +
-            //       "</div>"
-            //   );
-            // }
           } else {
-            // $(
-            //   "#videoremote" + remoteFeed.rfindex + " .no-video-container"
-            // ).remove();
-            // $("#remotevideo" + remoteFeed.rfindex)
-            //   .removeClass("hide")
-            //   .show();
           }
-          // if (!addButtons) return;
-          // if (
-          //   Janus.webRTCAdapter.browserDetails.browser === "chrome" ||
-          //   Janus.webRTCAdapter.browserDetails.browser === "firefox" ||
-          //   Janus.webRTCAdapter.browserDetails.browser === "safari"
-          // ) {
-          //   $("#curbitrate" + remoteFeed.rfindex)
-          //     .removeClass("hide")
-          //     .show();
-          //   bitrateTimer[remoteFeed.rfindex] = setInterval(() => {
-          //     // Display updated bitrate, if supported
-          //     var bitrate = remoteFeed.getBitrate();
-          //     $("#curbitrate" + remoteFeed.rfindex).text(bitrate);
-          //     // Check if the resolution changed too
-          //     var width = $("#remotevideo" + remoteFeed.rfindex).get(0)
-          //       .videoWidth;
-          //     var height = $("#remotevideo" + remoteFeed.rfindex).get(0)
-          //       .videoHeight;
-          //     if (width > 0 && height > 0)
-          //       $("#curres" + remoteFeed.rfindex)
-          //         .removeClass("hide")
-          //         .text(width + "x" + height)
-          //         .show();
-          //   }, 1000);
-          // }
         },
         oncleanup: () => {
           Janus.log(
@@ -980,14 +800,6 @@ export default {
           }
 
           if (remoteFeed.rfdisplay.includes("***SCREEN***")) {
-            // var fragment = document.createDocumentFragment();
-
-            // // Append desired element to the fragment:
-            // fragment.appendChild(this.$refs.remoteVideosGallery.innerHTML);
-
-            // // Append fragment to desired element:
-            // this.$refs.remoteVideosFull.appendChild(fragment);
-
             this.$refs.remoteVideosFull.classList.remove(
               "screen-sharing-active"
             );
@@ -995,16 +807,7 @@ export default {
             this.$refs.remoteScreenVideoElement.classList.add("hidden");
           }
 
-          // $("#remotevideo" + remoteFeed.rfindex).remove();
-          // $("#waitingvideo" + remoteFeed.rfindex).remove();
-          // $("#novideo" + remoteFeed.rfindex).remove();
-          // $("#curbitrate" + remoteFeed.rfindex).remove();
-          // $("#curres" + remoteFeed.rfindex).remove();
-          // if (bitrateTimer[remoteFeed.rfindex])
-          // clearInterval(bitrateTimer[remoteFeed.rfindex]);
-          // bitrateTimer[remoteFeed.rfindex] = null;
           remoteFeed.simulcastStarted = false;
-          // $("#simulcast" + remoteFeed.rfindex).remove();
         },
       });
     },
@@ -1134,14 +937,6 @@ export default {
           }
         },
         webrtcState: (on) => {
-          // Janus.log(
-          //   "Xaylo Janus says this WebRTC PeerConnection (feed #" +
-          //     remoteFeed.rfindex +
-          //     ") is " +
-          //     (on ? "up" : "down") +
-          //     " now"
-          // );
-
           if (on) {
             this.screenConnection.send({
               message: {
@@ -1200,7 +995,6 @@ export default {
     },
   },
   created() {
-    // this.Janus = janusConnector;
     this.initializeJanus();
   },
 
