@@ -1,7 +1,7 @@
 {
     "private": false,
     "name": "@jaythegeek/janus-video-room",
-    "version": "2.0.0",
+    "version": "2.0.3",
     "description": "A vue component for connecting to Janus",
     "main": "dist/index.js",
     "scripts": {
@@ -14,7 +14,7 @@
         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
         "prod": "npm run production",
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "deploy": "npm run production && npm publish"
+        "deploy": "webpack && npm publish"
     },
     "files": [
         "dist/*"

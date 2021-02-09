@@ -227,7 +227,7 @@ export default {
       this.videoEnabled = !this.videoEnabled;
     },
     endConnection() {
-      this.janusConnection.destroy();
+      // this.janusConnection.destroy();
       window.close();
     },
 
@@ -739,11 +739,13 @@ export default {
               this.$refs.remoteVideosFull.classList.add(
                 "screen-sharing-active"
               );
+
+              this.$refs.remoteVideosFull.classList.remove("h-full");
               var allRemoteVideos = document.getElementsByClassName(
                 "remote-video-player"
               );
               allRemoteVideos.forEach((v) => {
-                v.classList.remove("h-full");
+                v.classList.remove("h-screen");
                 v.classList.add("h-28");
               });
             }
@@ -754,8 +756,7 @@ export default {
               );
               if (!remoteVideoExists) {
                 var divAppend = document.createElement("div");
-                divAppend.classList +=
-                  "bg-black flex h-screen max-h-screen justify-center";
+                divAppend.classList += "bg-black flex justify-center mt-2";
                 divAppend.id = "remote-video-div-" + remoteFeed.rfindex;
 
                 var actualVideoEl = document.createElement("video");
@@ -803,6 +804,16 @@ export default {
             this.$refs.remoteVideosFull.classList.remove(
               "screen-sharing-active"
             );
+
+            this.$refs.remoteVideosFull.classList.add("h-full");
+
+            var allRemoteVideos = document.getElementsByClassName(
+              "remote-video-player"
+            );
+            allRemoteVideos.forEach((v) => {
+              v.classList.remove("h-28");
+              v.classList.add("h-screen");
+            });
 
             this.$refs.remoteScreenVideoElement.classList.add("hidden");
           }
