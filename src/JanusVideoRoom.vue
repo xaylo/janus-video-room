@@ -100,7 +100,6 @@ import { Janus } from "janus-gateway";
 //
 import ControlArea from "./components/ControlArea.vue";
 
-import { screenSharingMixin } from "./mixins/screen";
 
 export default {
   name: "JanusVideoRoom",

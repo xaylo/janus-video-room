@@ -1,20 +1,20 @@
 export const screenMixin = {
-    data() {
-        return {
-            screenVideoElement: null,
-            screenShare: null,
-            screenSources: [],
-            localScreenShare: false,
-            remoteScreenShare: false,
-            selectedScreenSource: null,
-            screenButtonBusy: false,
-            localScreenStream: null,
-            // 
-            screenCaptureSettings: {
-                cursor: "never" // always, motion, never
-            },
-        }
-    },
+    // data() {
+    //     return {
+    //         screenVideoElement: null,
+    //         screenShare: null,
+    //         screenSources: [],
+    //         localScreenShare: false,
+    //         remoteScreenShare: false,
+    //         selectedScreenSource: null,
+    //         screenButtonBusy: false,
+    //         localScreenStream: null,
+    //         // 
+    //         screenCaptureSettings: {
+    //             cursor: "never" // always, motion, never
+    //         },
+    //     }
+    // },
     computed: {
         miniScreen() {
             return this.$refs.miniScreen;
