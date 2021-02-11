@@ -1,7 +1,7 @@
 {
     "private": false,
     "name": "@jaythegeek/janus-video-room",
-    "version": "2.0.3",
+    "version": "2.0.4",
     "description": "A vue component for connecting to Janus",
     "main": "dist/index.js",
     "scripts": {
@@ -23,7 +23,7 @@
     "license": "MIT",
     "dependencies": {
         "cross-env": "^7.0.2",
-        "janus-gateway": "git://github.com/meetecho/janus-gateway.git",
+        "janus-gateway": "https://github.com/meetecho/janus-gateway.git",
         "mini-svg-data-uri": "^1.2.3",
         "tailwindcss": "^2.0.2"
     },
